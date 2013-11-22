@@ -10,4 +10,6 @@ suites:
 - name: default
   run_list:
   - recipe[nellie]
-  attributes: {}
+  attributes:
+    nellie:
+      pkg_url: http://mirror.xmission.com/jenkins/war/1.540/jenkins.war
