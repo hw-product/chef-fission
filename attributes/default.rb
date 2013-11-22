@@ -8,4 +8,7 @@ default[:nellie][:java_version] = 7
 default[:nellie][:user] = "nellie"
 default[:nellie][:group] = "nellie"
 default[:nellie][:java_path] = "/usr/bin/java"
-default[:nellie][:java_options] = "-Xms1024M -Xmx1024M"
+default[:nellie][:java_options] = [
+  "-Xms1024M",
+  "-Xmx1024M"
+]

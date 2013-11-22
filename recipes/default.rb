@@ -13,7 +13,9 @@ end
 
 include_recipe "apt" if platform_family?("debian")
 include_recipe "java"
-include_recipe "runit"
+
+user node[:nellie][:user]
+group node[:nellie][:group]
 
 directory ::File.dirname(config_file) do
   recursive true
@@ -30,24 +32,55 @@ directory ::File.dirname(jar_path) do
   recursive true
 end
 
-user node[:nellie][:user]
-group node[:nellie][:group]
-
 remote_file jar_path do
   source node[:nellie][:pkg_url]
   owner node[:nellie][:user]
   group node[:nellie][:group]
   mode "0644"
-  notifies :restart, "runit_service[nellie]"
 end
 
-runit_service "nellie" do
-  options({
-    :user => node[:nellie][:user],
-    :group => node[:nellie][:group],
-    :java_path => node[:nellie][:java_path],
-    :java_options => node[:nellie][:java_options],
-    :jar_path => jar_path
-  })
-  notifies :restart, "runit_service[nellie]"
+if platform_family?("mac_os_x")
+  plist = "/Library/LaunchDaemons/com.hw-ops.nellie.plist"
+  log_file = "/Library/Logs/Nellie/daemon.log"
+
+  directory ::File.dirname(log_file) do
+    owner node[:nellie][:user]
+    group node[:nellie][:group]
+    recursive true
+  end
+
+  template plist do
+    source "com.hw-ops.nellie.plist.erb"
+    mode 0644
+    variables(
+      :user => node[:nellie][:user],
+      :group => node[:nellie][:group],
+      :java_path => node[:nellie][:java_path],
+      :java_options => node[:nellie][:java_options],
+      :jar_path => jar_path,
+      :log_file => log_file
+    )
+  end
+
+  service "nellie" do
+    service_name "com.hw-ops.nellie"
+    action :start
+    subscribes :restart, "remote_file[#{jar_path}]"
+    subscribes :restart, "file[#{config_file}]"
+    subscribes :restart, "template[#{plist}]"
+  end
+else
+  include_recipe "runit"
+
+  runit_service "nellie" do
+    options({
+      :user => node[:nellie][:user],
+      :group => node[:nellie][:group],
+      :java_path => node[:nellie][:java_path],
+      :java_options => node[:nellie][:java_options],
+      :jar_path => jar_path
+    })
+    subscribes :restart, "remote_file[#{jar_path}]"
+    subscribes :restart, "file[#{config_file}]"
+  end
 end

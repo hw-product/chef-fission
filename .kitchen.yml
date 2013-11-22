@@ -5,6 +5,20 @@ driver_config:
 
 platforms:
 - name: ubuntu-12.04
+- name: macosx-10.9
+  driver_config:
+    box: macosx-10.9
+    chef_omnibus_url: https://gist.github.com/fnichol/3c10e7e58625ebe63487/raw/732bee6bb97bbfabc7535357f62fc91d77e90e93/install.sh
+    provider: vmware_fusion
+    customize:
+      memory: 2048
+  attributes:
+    nellie:
+      user: vagrant
+      group: admin
+    java:
+      dmg:
+        url: http://s3.amazonaws.com/temp.hw-ops.com/jdk-7u40-macosx-x64.dmg
 
 suites:
 - name: default
@@ -12,7 +26,7 @@ suites:
   - recipe[nellie]
   attributes:
     nellie:
-      pkg_url: http://mirror.xmission.com/jenkins/war/1.540/jenkins.war
+      pkg_url: http://mirrors.jenkins-ci.org/war/latest/jenkins.war
       config:
         options:
           nellie: is_jenkins

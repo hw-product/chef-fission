@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+
+<dict>
+  <key>Label</key>
+  <string>com.hw-ops.nellie</string>
+  <key>ProgramArguments</key>
+  <array>
+    <string><%= @java_path %></string>
+    <% Array(@java_options).each do |option| -%>
+    <string><%= option %></string>
+    <% end -%>
+    <string>-jar</string>
+    <string><%= @jar_path %></string>
+  </array>
+  <key>UserName</key>
+  <string><%= @user %></string>
+  <key>StandardOutPath</key>
+  <string><%= @log_file %></string>
+  <key>RunAtLoad</key>
+  <true/>
+</dict>
+
+</plist>

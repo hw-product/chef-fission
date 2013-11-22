@@ -1,4 +1,4 @@
 #! /bin/sh
 exec 2>&1
-exec chpst -u <%= @options[:user] %>:<%= @options[:group] %> <%= @options[:java_path] %> <%= @options[:java_options] %> -jar <%= @options[:jar_path] %>
+exec chpst -u <%= @options[:user] %>:<%= @options[:group] %> <%= @options[:java_path] %> <%= Array(@options[:java_options]).join(" ") %> -jar <%= @options[:jar_path] %>
 
