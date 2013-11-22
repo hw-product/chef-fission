@@ -1,6 +1,7 @@
 node.default[:java][:jdk_version] = node[:nellie][:java_version]
 
 jar_path = node[:nellie][:jar_path]
+config_file = node[:nellie][:config_file]
 
 if platform_family?("debian")
   node.default[:java][:java_home] = "/usr/lib/jvm/default-java"
@@ -13,6 +14,17 @@ end
 include_recipe "apt" if platform_family?("debian")
 include_recipe "java"
 include_recipe "runit"
+
+directory ::File.dirname(config_file) do
+  recursive true
+end
+
+file config_file do
+  owner node[:nellie][:user]
+  group node[:nellie][:group]
+  mode "0644"
+  content node[:nellie][:config][:options].to_json
+end
 
 directory ::File.dirname(jar_path) do
   recursive true

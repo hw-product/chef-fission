@@ -13,3 +13,6 @@ suites:
   attributes:
     nellie:
       pkg_url: http://mirror.xmission.com/jenkins/war/1.540/jenkins.war
+      config:
+        options:
+          nellie: is_jenkins
