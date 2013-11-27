@@ -78,7 +78,8 @@ else
       :group => node[:nellie][:group],
       :java_path => node[:nellie][:java_path],
       :java_options => node[:nellie][:java_options],
-      :jar_path => jar_path
+      :jar_path => jar_path,
+      :config_file => node[:nellie][:config_file]
     })
     subscribes :restart, "remote_file[#{jar_path}]"
     subscribes :restart, "file[#{config_file}]"
