@@ -1,5 +1,6 @@
-default[:nellie][:pkg_url] = "node[:nellie][:pkg][:url] must be set"
+default[:nellie][:pkg_url] = "node[:nellie][:pkg_url] must be set"
 default[:nellie][:jar_path] = "/opt/nellie/nellie.jar"
+default[:nellie][:current_jar] = File.basename(node[:nellie][:pkg_url])
 default[:nellie][:config_file] = "/etc/nellie/config.json"
 default[:nellie][:config][:options] = Hash.new
 

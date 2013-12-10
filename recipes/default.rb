@@ -1,7 +1,10 @@
 node.default[:java][:jdk_version] = node[:nellie][:java_version]
 
-jar_path = node[:nellie][:jar_path]
-config_file = node[:nellie][:config_file]
+pkg_url       = node[:nellie][:pkg_url]
+jar_path      = node[:nellie][:jar_path]
+current_jar   = node[:nellie][:current_jar]
+download_path = File.join(File.dirname(jar_path), File.basename(pkg_url))
+config_file   = node[:nellie][:config_file]
 
 if platform_family?("debian")
   node.default[:java][:java_home] = "/usr/lib/jvm/default-java"
@@ -32,11 +35,17 @@ directory ::File.dirname(jar_path) do
   recursive true
 end
 
-remote_file jar_path do
-  source node[:nellie][:pkg_url]
+remote_file download_path do
+  source pkg_url
   owner node[:nellie][:user]
   group node[:nellie][:group]
   mode "0644"
+end
+
+link jar_path do
+  to "./#{current_jar}"
+  owner node[:nellie][:user]
+  group node[:nellie][:group]
 end
 
 if platform_family?("mac_os_x")
