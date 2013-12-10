@@ -70,7 +70,15 @@ if platform_family?("mac_os_x")
     subscribes :restart, "template[#{plist}]"
   end
 else
+  runit_log_dir = node[:nellie][:runit][:log_dir]
+
   include_recipe "runit"
+
+  directory runit_log_dir do
+    recursive true
+    user node[:nellie][:user]
+    group node[:nellie][:group]
+  end
 
   runit_service "nellie" do
     options({
@@ -83,5 +91,6 @@ else
     })
     subscribes :restart, "remote_file[#{jar_path}]"
     subscribes :restart, "file[#{config_file}]"
+    subscribes :restart, "directory[#{runit_log_dir}]"
   end
 end

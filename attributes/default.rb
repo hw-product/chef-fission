@@ -5,6 +5,8 @@ default[:nellie][:config][:options] = Hash.new
 
 default[:nellie][:java_version] = 7
 
+default[:nellie][:runit][:log_dir] = "/var/log/nellie"
+
 default[:nellie][:user] = "nellie"
 default[:nellie][:group] = "nellie"
 default[:nellie][:java_path] = "/usr/bin/java"
