@@ -26,7 +26,7 @@ suites:
   - recipe[nellie]
   attributes:
     nellie:
-      pkg_url: http://static.hw-ops.com/nellie.jar
+      pkg_url: http://static.hw-ops.com/nellie-2c0b91b%2B20131210220630Z.jar
       config:
         options:
           nellie: is_jenkins
