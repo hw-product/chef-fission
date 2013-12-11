@@ -17,7 +17,10 @@ end
 include_recipe "apt" if platform_family?("debian")
 include_recipe "java"
 
-user node[:nellie][:user]
+user node[:nellie][:user] do
+  system true
+end
+
 group node[:nellie][:group]
 
 directory ::File.dirname(config_file) do
