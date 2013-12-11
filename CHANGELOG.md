@@ -1,4 +1,14 @@
+## 0.4.0 / 2013-12-11
+
+### Improvements
+
+* Create the nellie user a system user. ([@fnichol][])
+* Pretty print JSON configuration. ([@fnichol][])
+
+
 ## 0.3.0 / 2013-12-10
+
+### New features
 
 * Preserve download filename and symlink current jar for execution. ([@fnichol][])
 

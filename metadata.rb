@@ -1,5 +1,5 @@
 name "nellie"
-version "0.3.1"
+version "0.4.0"
 
 depends "apt"
 depends "java"
