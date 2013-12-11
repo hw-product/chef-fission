@@ -1,3 +1,5 @@
+require 'json'
+
 node.default[:java][:jdk_version] = node[:nellie][:java_version]
 
 pkg_url       = node[:nellie][:pkg_url]
@@ -31,7 +33,7 @@ file config_file do
   owner node[:nellie][:user]
   group node[:nellie][:group]
   mode "0644"
-  content node[:nellie][:config][:options].to_json
+  content JSON.pretty_generate(node[:nellie][:config][:options])
 end
 
 directory ::File.dirname(jar_path) do
