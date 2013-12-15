@@ -1,4 +1,4 @@
-name "nellie"
+name "fission"
 version "0.4.1"
 
 depends "apt"
