@@ -58,18 +58,17 @@ action :install do
   end
 
   file config_file do
-    content Chef::JSONCompat.to_json(new_resource.config)
+    content Chef::JSONCompat.to_json_pretty(new_resource.config)
     mode 0644
   end
 
   if(platform_family?('mac_os_x'))
 
-    plist = "/Library/LaunchDaemons/com.hw-ops.#{new_resource.name}.plist"
-    log_file = "/Library/Logs/Fission/#{new_resource.name}-daemon.log"
+    fission_service = "com.hw-ops.#{new_resource.name}"
+    plist = File.join('/Library/LaunchDaemons', "#{fission_service}.plist")
+    log_file = File.join('/Library/Logs', new_resource.name, 'daemon.log')
 
     directory ::File.dirname(log_file) do
-      owner new_resource.user
-      group new_resource.group
       recursive true
     end
 
@@ -77,9 +76,10 @@ action :install do
       source "com.hw-ops.fission.plist.erb"
       mode 0644
       variables(
-        :app_name => new_resource.name,
+        :service_name => fission_service,
         :user => new_resource.user,
         :group => new_resource.group,
+        :timeout => new_resource.service_timeout || node[:fission][:service_timeout],
         :java_path => node[:fission][:java_path],
         :java_options => new_resource.java_options,
         :jar_path => current_jar_path,
@@ -88,9 +88,9 @@ action :install do
     end
 
     service new_resource.name do
-      service_name "com.hw-ops.fission"
+      service_name fission_service
       action :start
-      subscribes :restart, "remote_file[#{jar_path}]"
+      subscribes :restart, "link[#{jar_path}]"
       subscribes :restart, "file[#{config_file}]"
       subscribes :restart, "template[#{plist}]"
     end
@@ -109,7 +109,7 @@ action :install do
         :config_file => config_file
       )
       default_logger true
-      subscribes :restart, "remote_file[#{jar_path}]"
+      subscribes :restart, "link[#{jar_path}]"
       subscribes :restart, "file[#{config_file}]"
     end
   end

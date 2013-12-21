@@ -13,3 +13,4 @@ default[:fission][:java_options] = [
 ]
 
 default[:fission][:instances] = {}
+default[:fission][:service_timeout] = 60

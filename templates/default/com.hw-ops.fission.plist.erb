@@ -4,7 +4,7 @@
 
 <dict>
   <key>Label</key>
-  <string>com.hw-ops.<%= @app_name %></string>
+  <string><%= @service_name %></string>
   <key>ProgramArguments</key>
   <array>
     <string><%= @java_path %></string>
@@ -13,13 +13,24 @@
     <% end -%>
     <string>-jar</string>
     <string><%= @jar_path %></string>
+    <string>-c</string>
+    <string><%= @config_file %></string>
   </array>
+  <key>TimeOut</key>
+  <integer><%= @timeout %></integer>
   <key>UserName</key>
   <string><%= @user %></string>
   <key>StandardOutPath</key>
   <string><%= @log_file %></string>
+  <key>StandardErrorPath</key>
+  <string><%= @log_file %></string>
   <key>RunAtLoad</key>
   <true/>
+  <key>KeepAlive</key>
+  <dict>
+    <key>SuccessfulExit</key>
+    <true/>
+  </dict>
 </dict>
 
 </plist>
