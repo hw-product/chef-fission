@@ -14,3 +14,16 @@ default[:fission][:java_options] = [
 
 default[:fission][:instances] = {}
 default[:fission][:service_timeout] = 60
+
+default[:fission][:web][:pkg_url] = "node[:fission][:pkg_url] must be set"
+default[:fission][:web][:directories][:install] = '/opt'
+default[:fission][:web][:directories][:config] = '/etc/fissionweb'
+
+default[:fission][:web][:user] = 'fissionweb'
+default[:fission][:web][:group] = 'fissionweb'
+default[:fission][:web][:java_options] = [
+  '-Xms1024M',
+  '-Xmx1024M'
+]
+
+default[:fission][:web][:instances] = {}

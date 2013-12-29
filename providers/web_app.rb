@@ -3,12 +3,12 @@ use_inline_resources(true) if self.respond_to?(:use_inline_resources)
 def load_current_resource
   # Default resource attributes to node attributes
   {
-    :install_directory => node[:fission][:directories][:install],
-    :config_directory => node[:fission][:directories][:config],
-    :user => node[:fission][:user],
-    :group => node[:fission][:group],
-    :package_url => node[:fission][:pkg_url],
-    :java_options => node[:fission][:java_options]
+    :install_directory => node[:fission][:web][:directories][:install],
+    :config_directory => node[:fission][:web][:directories][:config],
+    :user => node[:fission][:web][:user],
+    :group => node[:fission][:web][:group],
+    :package_url => node[:fission][:web][:pkg_url],
+    :java_options => node[:fission][:web][:java_options]
   }.each do |resource_method, default_value|
     unless(new_resource.send(resource_method))
       new_resource.send(resource_method, default_value)
@@ -17,7 +17,12 @@ def load_current_resource
 end
 
 action :install do
+
+  set_log_config unless new_resource.log_config
+
   run_context.include_recipe 'fission::setup'
+  chef_gem 'xml-simple'
+  require 'xmlsimple'
 
   jar_path = ::File.join(
     new_resource.install_directory,
@@ -27,9 +32,9 @@ action :install do
     new_resource.install_directory,
     new_resource.name
   )
-  config_file = ::File.join(
+  log_config_file = ::File.join(
     new_resource.config_directory,
-    "#{new_resource.name}.json"
+    "#{new_resource.name}.log.xml"
   )
 
   user new_resource.user do
@@ -57,8 +62,14 @@ action :install do
     to current_jar_path
   end
 
-  file config_file do
-    content Chef::JSONCompat.to_json_pretty(new_resource.config)
+  file log_config_file do
+    content(
+      SimpleXml.xml_out(
+        new_resource.log_config,
+        'AttrPrefix' => true,
+        'KeepRoot' => true
+      )
+    )
     mode 0644
   end
 
@@ -73,7 +84,7 @@ action :install do
     end
 
     template plist do
-      source "com.hw-ops.fission.plist.erb"
+      source "com.hw-ops.fission.plist-web.erb"
       mode 0644
       variables(
         :service_name => fission_service,
@@ -83,7 +94,8 @@ action :install do
         :java_path => node[:fission][:java_path],
         :java_options => new_resource.java_options,
         :jar_path => current_jar_path,
-        :log_file => log_file
+        :log_file => log_file,
+        :log_config_file => log_config_file
       )
     end
 
@@ -91,7 +103,6 @@ action :install do
       service_name fission_service
       action :start
       subscribes :restart, "link[#{jar_path}]"
-      subscribes :restart, "file[#{config_file}]"
       subscribes :restart, "template[#{plist}]"
     end
 
@@ -99,20 +110,20 @@ action :install do
     run_context.include_recipe 'runit'
 
     runit_service new_resource.name do
-      run_template_name 'fission'
+      run_template_name 'fission-web'
       options(
         :user => new_resource.user,
         :group => new_resource.group,
         :java_path => node[:fission][:java_path],
         :java_options => new_resource.java_options,
         :jar_path => current_jar_path,
-        :config_file => config_file
+        :log_config_file => log_config_file
       )
       default_logger true
       subscribes :restart, "link[#{jar_path}]"
-      subscribes :restart, "file[#{config_file}]"
     end
   end
+
 end
 
 action :uninstall do
@@ -125,14 +136,55 @@ action :uninstall do
     new_resource.install_directory,
     new_resource.name
   )
-  config_file = ::File.join(
+  log_config_file = ::File.join(
     new_resource.config_directory,
-    "#{new_resource.name}.json"
+    "#{new_resource.name}.log.xml"
   )
 
-  [jar_path, current_jar_path, config_file].each do |file_path|
+  [jar_path, current_jar_path, log_config_file].each do |file_path|
     file file_path do
       action :delete
     end
   end
+
+end
+
+def set_log_config
+  new_resource.log_config(
+    :configuration => {
+      :appender => [
+        {
+          :@name => 'file',
+          :@class => 'ch.qos.logback.core.rolling.RollingFileAppender',
+          :File => ::File.join('/var/log', new_resource.name),
+          :encoder => {
+            :pattern => '%d{yyyy-MM-dd HH:mm:ss} %-5p %c{1}:%L - %m'
+          },
+          :rollingPolicy => {
+            :@class => 'ch.qos.logback.core.rolling.FixedWindowRollingPolicy',
+            :maxIndex => 10,
+            :FileNamePattern => ::File.join('/var/log', "#{new_resource.name}.%i")
+          },
+          :triggeringPolicy => {
+            :@class => 'ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy',
+            :MaxFileSize => '50MB'
+          }
+        },
+        {
+          :@name => 'stdout',
+          :@class => 'ch.qos.logback.core.ConsoleAppender',
+          :Target => 'System.out',
+          :encoder => {
+            :pattern => '%d{yyyy-MM-dd HH:mm:ss} %-5p %c{1}:%L - %m'
+          }
+        }
+      ],
+      :root => {
+        :@level => 'INFO',
+        'appender-ref' => [
+          {:@ref => 'file'}, {:@ref => 'stdout'}
+        ]
+      }
+    }
+  )
 end
