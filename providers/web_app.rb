@@ -95,7 +95,8 @@ action :install do
         :java_options => new_resource.java_options,
         :jar_path => current_jar_path,
         :log_file => log_file,
-        :log_config_file => log_config_file
+        :log_config_file => log_config_file,
+        :logger_config_name => new_resource.logger_config_name
       )
     end
 
@@ -117,7 +118,8 @@ action :install do
         :java_path => node[:fission][:java_path],
         :java_options => new_resource.java_options,
         :jar_path => current_jar_path,
-        :log_config_file => log_config_file
+        :log_config_file => log_config_file,
+        :logger_config_name => new_resource.logger_config_name
       )
       default_logger true
       subscribes :restart, "link[#{jar_path}]"

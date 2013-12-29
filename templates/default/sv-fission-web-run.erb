@@ -1,0 +1,3 @@
+#! /bin/sh
+exec 2>&1
+exec chpst -u <%= @options[:user] %>:<%= @options[:group] %> <%= @options[:java_path] %> <%= Array(@options[:java_options]).join(" ") %> -D<%= @options[:logger_config_name] %>="file:<%= @options[:log_config_file] %>" -jar <%= @options[:jar_path] %>
