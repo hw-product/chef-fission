@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+
+<dict>
+  <key>Label</key>
+  <string><%= @service_name %></string>
+  <key>ProgramArguments</key>
+  <array>
+    <string><%= @java_path %></string>
+    <% Array(@java_options).each do |option| -%>
+    <string><%= option %></string>
+    <% end -%>
+    <string>-D<%= @options[:logger_config_name] %>="file:<%= @options[:log_config_file] %>"</string>
+    <string>-jar</string>
+    <string><%= @jar_path %></string>
+  </array>
+  <key>TimeOut</key>
+  <integer><%= @timeout %></integer>
+  <key>UserName</key>
+  <string><%= @user %></string>
+  <key>StandardOutPath</key>
+  <string><%= @log_file %></string>
+  <key>StandardErrorPath</key>
+  <string><%= @log_file %></string>
+  <key>RunAtLoad</key>
+  <true/>
+  <key>KeepAlive</key>
+  <dict>
+    <key>SuccessfulExit</key>
+    <true/>
+  </dict>
+</dict>
+
+</plist>
