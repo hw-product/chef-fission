@@ -37,6 +37,11 @@ action :install do
     "#{new_resource.name}.log.xml"
   )
 
+  config_file = ::File.join(
+    new_resource.config_directory,
+    "#{new_resource.name}.json"
+  )
+
   user new_resource.user do
     system true
   end
@@ -70,6 +75,11 @@ action :install do
         'KeepRoot' => true
       )
     )
+    mode 0644
+  end
+
+  file config_file do
+    content Chef::JSONCompat.to_json_pretty(new_resource.config)
     mode 0644
   end
 
@@ -119,7 +129,8 @@ action :install do
         :java_options => new_resource.java_options,
         :jar_path => current_jar_path,
         :log_config_file => log_config_file,
-        :logger_config_name => new_resource.logger_config_name
+        :logger_config_name => new_resource.logger_config_name,
+        :config_file => config_file
       )
       default_logger true
       subscribes :restart, "link[#{jar_path}]"
