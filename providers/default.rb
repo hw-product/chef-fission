@@ -1,4 +1,4 @@
-use_inline_resources(true) if self.respond_to?(:use_inline_resources)
+use_inline_resources if self.respond_to?(:use_inline_resources)
 
 def load_current_resource
   # Default resource attributes to node attributes
@@ -53,8 +53,8 @@ action :install do
     mode 0644
   end
 
-  link jar_path do
-    to current_jar_path
+  link current_jar_path do
+    to jar_path
   end
 
   file config_file do
