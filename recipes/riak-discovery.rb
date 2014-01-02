@@ -1,6 +1,6 @@
 
 riak_nodes = discovery_all(
-  "recipes:riak AND fission.core.group:#{node.fission.core.group.gsub(':', '\:')}",
+  "recipes:riak AND fission_core_group:#{node.fission.core.group.gsub(':', '\:')}",
   :raw_search => true,
   :empty_ok => true,
   :minimum_response_time => false
