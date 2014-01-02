@@ -17,5 +17,6 @@ file '/etc/fission/riak.json' do
         [:host => n.ipaddress]
       }
     )
+  )
   mode 0644
 end
