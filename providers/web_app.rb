@@ -134,6 +134,7 @@ action :install do
       )
       default_logger true
       subscribes :restart, "link[#{current_jar_path}]"
+      subscribes :restart, "file[#{config_file}]"
     end
   end
 
