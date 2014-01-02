@@ -113,7 +113,7 @@ action :install do
     service new_resource.name do
       service_name fission_service
       action :start
-      subscribes :restart, "link[#{jar_path}]"
+      subscribes :restart, "link[#{current_jar_path}]"
       subscribes :restart, "template[#{plist}]"
     end
 
@@ -133,7 +133,7 @@ action :install do
         :config_file => config_file
       )
       default_logger true
-      subscribes :restart, "link[#{jar_path}]"
+      subscribes :restart, "link[#{current_jar_path}]"
     end
   end
 
