@@ -2,7 +2,7 @@
 riak_nodes = discovery_all(
   "recipes:riak AND fission.core.group:#{node.fission.core.group}",
   :raw_search => true,
-  :empty_ok => false,
+  :empty_ok => true,
   :minimum_response_time => false
 )
 
