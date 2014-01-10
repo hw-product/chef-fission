@@ -8,3 +8,4 @@ attribute :java_options, :kind_of => Array
 attribute :user, :kind_of => String
 attribute :group, :kind_of => String
 attribute :config, :kind_of => Hash
+attribute :sudo, :kind_of => [TrueClass, FalseClass], :required => true, :default => false

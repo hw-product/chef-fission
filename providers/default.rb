@@ -40,6 +40,18 @@ action :install do
     users [new_resource.user]
   end
 
+  sudo_args = {
+    :name => new_resource.name,
+    :user => new_resource.user,
+    :enabled => new_resource.sudo
+  }
+
+  sudo sudo_args[:name] do
+    user sudo_args[:user]
+    nopasswd true
+    only_if{ sudo_args[:enabled] }
+  end
+
   directory new_resource.install_directory do
     recursive true
   end
