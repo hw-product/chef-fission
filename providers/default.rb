@@ -120,6 +120,7 @@ action :install do
         :jar_path => current_jar_path,
         :config_file => config_file
       )
+      restart_on_update false
       default_logger true
       subscribes :restart, "link[#{current_jar_path}]"
       subscribes :restart, "file[#{config_file}]"
