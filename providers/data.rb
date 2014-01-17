@@ -1,10 +1,12 @@
 use_inline_resources
 
+include Chef::Mixin::ShellOut
+
 def load_current_resource
 end
 
 action :init do
-  node[:riak][:args]['-setcookie'] = generate_cookie
+  node.set[:riak][:args]['-setcookie'] = generate_cookie
   run_context.include_recipe 'riak'
 end
 
@@ -14,7 +16,7 @@ action :join do
   return if joined?
 
   timeout = new_resource.timeout
-  cluster = search(:nodes, "riak_args_-setcookie:#{generate_cookie}")
+  cluster = search(:node, "riak_args_-setcookie:#{generate_cookie}")
   cluster.delete_if{|n| n.name == node.name}
   Chef::Log.debug "Data nodes found in cluster: #{cluster.inspect}"
 
