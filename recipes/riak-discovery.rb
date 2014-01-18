@@ -1,6 +1,12 @@
 
+search_query = [
+  "recipes:fission\:\:data",
+  "fission_core_group:#{node.fission.core.group.gsub(':', '\:')}",
+  'fission_data_cluster:joined'
+]
+
 node.default[:fission][:data_store][:riak][:nodes] = search(:node,
-  "recipes:riak AND fission_core_group:#{node.fission.core.group.gsub(':', '\:')}"
+  search_query.join(' AND ')
 ).map do |riak_node|
   {:host => riak_node.ipaddress}
 end
