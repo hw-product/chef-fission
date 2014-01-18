@@ -33,13 +33,9 @@ action :join do
       if(timeout < 1)
         Chef::Application.fatal! 'Failed to join data node into cluster!'
       end
-
       node.set[:fission][:data][:cluster] = 'joined'
-
     else
-
       node.set[:fission][:data][:cluster] = 'unjoined'
-
     end
   end
 end
@@ -50,6 +46,8 @@ action :leave do
     command 'riak-admin cluster leave'
     only_if{ joined? }
   end
+
+  node.set[:fission][:data][:cluster] = 'unjoined'
 
 end
 
