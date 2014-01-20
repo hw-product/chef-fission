@@ -37,6 +37,8 @@ action :join do
     else
       node.set[:fission][:data][:cluster] = 'unjoined'
     end
+  else
+    node.set[:fission][:data][:cluster] = 'joined'
   end
 end
 
