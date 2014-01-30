@@ -1,3 +1,5 @@
+require 'uri'
+
 use_inline_resources if self.respond_to?(:use_inline_resources)
 
 def load_current_resource
