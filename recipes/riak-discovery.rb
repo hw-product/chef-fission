@@ -1,7 +1,7 @@
 
 search_query = [
-  "recipes:fission\:\:data",
-  "fission_core_group:#{node.fission.core.group.gsub(':', '\:')}",
+  "recipes:fission\\:\\:data",
+  "fission_core_group:#{node.fission.core.group.gsub(':', '*')}",
   'fission_data_cluster:joined'
 ]
 
