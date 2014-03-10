@@ -28,7 +28,9 @@ action :install do
 
   jar_path = ::File.join(
     new_resource.install_directory,
-    ::File.basename(new_resource.package_url)
+    ::File.basename(
+      URI.parse(new_resource.package_url).path
+    )
   )
   current_jar_path = ::File.join(
     new_resource.install_directory,
