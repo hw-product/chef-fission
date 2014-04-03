@@ -5,3 +5,4 @@ Cheffile.lock
 .librarian
 .bundle
 tmp/
+test/integration/data/nellie.jar
