@@ -10,15 +10,13 @@ platforms:
     provider: vmware_fusion
     customize:
       memory: 2048
-  provisioner:
-    chef_omnibus_url: https://gist.github.com/fnichol/3c10e7e58625ebe63487/raw/732bee6bb97bbfabc7535357f62fc91d77e90e93/install.sh
   attributes:
     nellie:
       user: vagrant
       group: admin
     java:
       dmg:
-        url: http://s3.amazonaws.com/temp.hw-ops.com/jdk-7u40-macosx-x64.dmg
+        url: http://hw-packages.s3.amazonaws.com/jdk-7u40-macosx-x64.dmg
 
 suites:
 - name: default
@@ -26,7 +24,77 @@ suites:
   - recipe[nellie]
   attributes:
     nellie:
-      pkg_url: http://static.hw-ops.com/nellie-2c0b91b%2B20131210220630Z.jar
+      pkg_url: https://s3-us-west-2.amazonaws.com/assets.hw-ops.com/nellie-1391559963.jar
       config:
         options:
-          nellie: is_jenkins
+          fission:
+            sources:
+              nellie:
+                type: test
+      env_vars: []
+
+- name: webhooks
+  run_list:
+  - recipe[nellie]
+  attributes:
+    nellie:
+      pkg_url: https://s3-us-west-2.amazonaws.com/assets.hw-ops.com/nellie-an_epoch_time.jar?AWSAccessKeyId=a_key_id&Signature=a_signature&Expires=an_expires_epoch
+      config:
+        options:
+          fission:
+            branding:
+              name: hw-ops.com
+              dns: hw-ops.com
+              email: nellie@hw-ops.com
+              http: http://hw-ops.com
+              https: https://hw-ops.com
+            code_fetcher:
+              github:
+                token: a_token
+            github:
+              access_token: a_token
+            loaders:
+              sources:
+              - carnivore-actor
+              - carnivore-http
+              - carnivore-http/point_builder
+              workers:
+              - fission-rest-api/api/github
+              - fission-rest-api
+              - fission-nellie
+              - fission-router
+              - fission-code-fetcher
+              - fission-callbacks
+              - fission-callbacks/webhooks
+            rest_api:
+              github_commit:
+                job_name: router
+              setup:
+                host: 0.0.0.0
+                port: 443
+            router:
+              behavior: config
+              route:
+              - nellie
+              - callbacks
+            sources:
+              callbacks:
+                type: actor
+              code_fetcher:
+                type: actor
+              nellie:
+                type: actor
+              router:
+                type: actor
+            utils:
+              process:
+                max_processes: 5
+                enable_spawn: true
+            webhooks:
+              target: https://a_webhook
+            workers:
+              callbacks_webhook: 1
+              github_commit: 1
+              router: 1
+              code_fetcher: 1
+              nellie: 1
