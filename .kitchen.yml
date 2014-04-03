@@ -27,22 +27,23 @@ suites:
   run_list:
   - recipe[fission]
   attributes:
-    nellie:
-      pkg_url: https://s3-us-west-2.amazonaws.com/assets.hw-ops.com/nellie-1391559963.jar
-      config:
-        options:
-          fission:
-            sources:
-              nellie:
-                type: test
-      env_vars: []
+    fission:
+      instances:
+        nellie:
+          package_url: file:///tmp/kitchen/data/nellie.jar
+          config:
+            options:
+              fission:
+                sources:
+                  nellie:
+                    type: test
 
 - name: webhooks
   run_list:
   - recipe[nellie]
   attributes:
     nellie:
-      pkg_url: https://s3-us-west-2.amazonaws.com/assets.hw-ops.com/nellie-an_epoch_time.jar?AWSAccessKeyId=a_key_id&Signature=a_signature&Expires=an_expires_epoch
+      pkg_url: file:///tmp/kitchen/data/nellie.jar
       config:
         options:
           fission:
