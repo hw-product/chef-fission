@@ -5,6 +5,9 @@ driver:
 platforms:
 - name: ubuntu-12.04
 - name: ubuntu-13.10
+  driver:
+    customize:
+      memory: 2048
 - name: macosx-10.9
   driver:
     box: macosx-10.9
