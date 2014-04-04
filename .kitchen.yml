@@ -81,7 +81,7 @@ suites:
                 - fission-router
                 - fission-code-fetcher
                 - fission-callbacks
-                - fission-callbacks/webhooks
+                - fission-callbacks/webhook
               rest_api:
                 github_commit:
                   job_name: router
