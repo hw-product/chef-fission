@@ -27,7 +27,12 @@ suites:
   run_list:
   - recipe[fission]
   attributes:
+    java:
+      install_flavor: oracle
+      oracle:
+        accept_oracle_download_terms: true
     fission:
+      java_version: 8
       instances:
         nellie:
           package_url: file:///tmp/kitchen/data/nellie.jar
