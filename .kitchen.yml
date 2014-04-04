@@ -37,11 +37,10 @@ suites:
         nellie:
           package_url: file:///tmp/kitchen/data/nellie.jar
           config:
-            options:
-              fission:
-                sources:
-                  nellie:
-                    type: test
+            fission:
+              sources:
+                nellie:
+                  type: test
 
 - name: webhooks
   run_list:
