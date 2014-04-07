@@ -109,7 +109,7 @@ suites:
               webhooks:
                 target: https://a_webhook
               workers:
-                callbacks_webhook: 1
+                callbacks: 1
                 github_commit: 1
                 router: 1
                 code_fetcher: 1
