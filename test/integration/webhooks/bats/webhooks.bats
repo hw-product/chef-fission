@@ -12,3 +12,7 @@
   sleep 30
   grep 'Adding callback class (Fission::Callbacks::Webhook) under supervision.' /var/log/nellie/current 
 }
+
+@test "nellie rest-api available" {
+  curl -f http://localhost:8000
+}
