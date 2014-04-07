@@ -107,7 +107,7 @@ suites:
                   max_processes: 5
                   enable_spawn: true
               webhooks:
-                target: https://a_webhook
+                endpoint: http://a_test_url
               workers:
                 callbacks: 1
                 github_commit: 1
