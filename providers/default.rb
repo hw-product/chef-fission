@@ -74,7 +74,12 @@ action :install do
   end
 
   file config_file do
-    content Chef::JSONCompat.to_json_pretty(new_resource.config)
+    content Chef::JSONCompat.to_json_pretty(
+      Chef::Mixin::DeepMerge.merge(
+        node[:fission][:default_config].fetch(:instance, {}),
+        new_resource.config
+      )
+    )
     mode 0644
   end
 
