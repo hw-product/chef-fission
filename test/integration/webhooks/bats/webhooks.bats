@@ -16,3 +16,15 @@
 @test "nellie rest-api available" {
   curl -f http://localhost:8000
 }
+
+@test "webhook generated?" {
+  skip
+    curl \
+        --user name:password \
+        --insecure \
+        -H 'Accept: application/json' \
+        -H 'Content-Type: application/json' \
+        -X POST \
+        -d '{"json": true}' \
+        https://requestb.in/1jmufnw1
+}
