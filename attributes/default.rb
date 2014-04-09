@@ -27,3 +27,6 @@ default[:fission][:web][:java_options] = [
 ]
 
 default[:fission][:web][:instances] = {}
+
+default[:fission][:default_config][:instance] = {}
+default[:fission][:default_config][:web] = {}
