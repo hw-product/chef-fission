@@ -1,3 +1,5 @@
+fission_user 'fission'
+
 include_recipe 'gpg'
 include_recipe 'gpg::import'
 
@@ -18,4 +20,6 @@ ruby_block 'fission generator[set key]' do
       end
     end
   end
+  action :nothing
+  subscribes :create, 'gpg_import[packager]', :immediately
 end

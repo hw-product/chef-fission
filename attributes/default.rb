@@ -30,3 +30,5 @@ default[:fission][:web][:instances] = {}
 
 default[:fission][:default_config][:instance] = {}
 default[:fission][:default_config][:web] = {}
+default[:fission][:users][:directory] = '/usr/local/fission/users'
+default[:fission][:generator][:gpg_key] = 'packager'

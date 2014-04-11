@@ -36,9 +36,7 @@ action :install do
     "#{new_resource.name}.json"
   )
 
-  user new_resource.user do
-    system true
-  end
+  fission_user new_resource.user
 
   group new_resource.group do
     users [new_resource.user]

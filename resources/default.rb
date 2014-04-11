@@ -5,7 +5,7 @@ attribute :package_url, :kind_of => String
 attribute :install_directory, :kind_of => String
 attribute :config_directory, :kind_of => String
 attribute :java_options, :kind_of => Array
-attribute :user, :kind_of => String
+attribute :user, :kind_of => String, :default => 'fission'
 attribute :group, :kind_of => String
 attribute :config, :kind_of => Hash
 attribute :sudo, :kind_of => [TrueClass, FalseClass], :default => false
