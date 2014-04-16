@@ -1,10 +1,5 @@
 require 'spec_helper'
 
-# nellie rest-api available
-describe port(8000) do
-  it { should be_listening }
-end
-
 # nellie loaded webhook worker
 describe file( '/var/log/nellie/current' ) do
   it { should be_file }

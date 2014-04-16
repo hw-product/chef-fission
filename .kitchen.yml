@@ -42,9 +42,8 @@ suites:
                 nellie:
                   type: test
 
-- name: webhooks
+- name: rest-api
   run_list:
-  - recipe[git]
   - recipe[fission]
   attributes:
     java:
@@ -64,11 +63,6 @@ suites:
                 email: nellie@hw-ops.com
                 http: http://hw-ops.com
                 https: https://hw-ops.com
-              code_fetcher:
-                github:
-                  token: a_token
-              github:
-                access_token: a_token
               loaders:
                 sources:
                 - carnivore-actor
@@ -79,9 +73,7 @@ suites:
                 - fission-rest-api
                 - fission-nellie
                 - fission-router
-                - fission-code-fetcher
                 - fission-callbacks
-                - fission-callbacks/webhook
               rest_api:
                 github_commit:
                   job_name: router
@@ -92,11 +84,60 @@ suites:
                 behavior: config
                 route:
                 - nellie
+              sources:
+                nellie:
+                  type: actor
+                router:
+                  type: actor
+              utils:
+                process:
+                  max_processes: 5
+                  enable_spawn: true
+              workers:
+                github_commit: 1
+                router: 1
+                nellie: 1
+
+- name: webhooks
+  run_list:
+  - recipe[fission]
+  attributes:
+    java:
+      install_flavor: oracle
+      oracle:
+        accept_oracle_download_terms: true
+    fission:
+      java_version: 8
+      instances:
+        nellie:
+          package_url: file:///tmp/kitchen/data/nellie.jar
+          config:
+            fission:
+              branding:
+                name: hw-ops.com
+                dns: hw-ops.com
+                email: nellie@hw-ops.com
+                http: http://hw-ops.com
+                https: https://hw-ops.com
+              github:
+                access_token: a_token
+              loaders:
+                sources:
+                - carnivore-actor
+                - carnivore-http
+                - carnivore-http/point_builder
+                workers:
+                - fission-nellie
+                - fission-router
+                - fission-callbacks
+                - fission-callbacks/webhook
+              router:
+                behavior: config
+                route:
+                - nellie
                 - callbacks
               sources:
                 callbacks:
-                  type: actor
-                code_fetcher:
                   type: actor
                 nellie:
                   type: actor
@@ -110,7 +151,5 @@ suites:
                 endpoint: http://a_test_url
               workers:
                 callbacks: 1
-                github_commit: 1
                 router: 1
-                code_fetcher: 1
                 nellie: 1
