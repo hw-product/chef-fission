@@ -16,7 +16,7 @@ ruby_block 'fission generator[set key]' do
           memo[k] = Mash.new
         end
         val[:default] = key_id
-        node.set[:fission] = result
+        node.default[:fission] = Chef::Mixin::DeepMerge.merge(Mash.new(JSONCompat.from_json(JSONCompat.to_json(node[:fission]))), result)
       end
     end
   end
