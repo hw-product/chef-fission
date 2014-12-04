@@ -23,6 +23,8 @@ action :install do
   set_log_config unless new_resource.log_config
 
   run_context.include_recipe 'fission::setup'
+  run_context.include_recipe 'fission::java'
+
   chef_gem 'xml-simple'
   require 'xmlsimple'
 

@@ -20,6 +20,7 @@ end
 
 action :install do
   run_context.include_recipe 'fission::setup'
+  run_context.include_recipe 'fission::java'
 
   jar_path = ::File.join(
     new_resource.install_directory,
