@@ -32,3 +32,5 @@ default[:fission][:default_config][:instance] = {}
 default[:fission][:default_config][:web] = {}
 default[:fission][:users][:directory] = '/usr/local/fission/users'
 default[:fission][:generator][:gpg_key] = 'packager'
+
+default[:fission][:gems] = Mash.new
