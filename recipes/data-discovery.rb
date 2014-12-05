@@ -75,7 +75,7 @@ file '/etc/fission/sql.json' do
   content lazy{
     Chef::JSONCompat.to_json_pretty(
       Mash.new(:adapter => :postgres).merge(
-        node.run_state[:fission_sql_nodes]
+        :host => node.run_state[:fission_sql_nodes].first
       )
     )
   }
