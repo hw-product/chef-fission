@@ -56,10 +56,7 @@ ruby_block 'data-discovery(sql)' do
   only_if do
     node[:fission][:data][:discovery].include?('sql')
   end
-end
-
-directory '/etc/fission' do
-  recursive true
+  action :create
 end
 
 file '/etc/fission/riak.json' do
