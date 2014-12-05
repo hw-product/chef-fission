@@ -18,17 +18,16 @@ action :enable do
 
   args = credentials_for(new_resource.name)
 
-  bash "data store user(sql - #{args[:user]})" do
-    command %(psql -c "create user #{args[:user]} with password '#{args[:password]}' login")
+  execute "data store user(sql - #{args[:user]})" do
+    command "psql -c \"create user #{args[:user]} with password '#{args[:password]}' login\""
     user node[:fission][:data][:sql][:system_user]
-    not_if %(sudo -u #{node[:fission][:data][:sql][:system_user]} psql -c "\du" | grep #{args[:user]})
+    not_if "su #{node[:fission][:data][:sql][:system_user]} -lc \"psql -tAc 'select * from pg_roles'\" | grep #{args[:user]}"
   end
 
-  bash "data store database(sql - #{args[:user]})" do
-    command %(psql -c "create database #{args[:database] || args[:user]}")
+  execute "data store database(sql - #{args[:database] || args[:user]})" do
+    command "createdb #{args[:database] || args[:user]} -O #{args[:user]}"
     user node[:fission][:data][:sql][:system_user]
-    action :nothing
-    subscribes :run, "bash[data store user(sql - #{args[:user]})]", :immediately
+    not_if "su #{node[:fission][:data][:sql][:system_user]} -lc 'psql -ltA' | grep #{args[:database] || args[:user]}"
   end
 
 end
