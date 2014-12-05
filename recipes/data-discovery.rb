@@ -7,7 +7,7 @@ ruby_block 'data-discovery(riak)' do
   block do
     search_query = [
       "recipes:fission\\:\\:data",
-      "fission_core_group:#{node[:fission][:core][:group].gsub(':', '*')}",
+      "fission_core_group:#{node[:stack][:grouping]}",
       'fission_data_cluster:joined'
     ]
     node.run_state[:fission_riak_nodes] = search(:node, search_query.join(' AND ')).map do |r_node|
@@ -30,7 +30,7 @@ ruby_block 'data-discovery(sql)' do
   block do
     search_query = [
       "recipes:fission\\:\\:data",
-      "fission_core_group:#{node[:fission][:core][:group].gsub(':', '*')}",
+      "fission_core_group:#{node[:stack][:grouping]}",
       'postgresql:*'
     ]
     addrs = node.run_state[:fission_sql_nodes] = search(:node, search_query.join(' AND ')).map do |r_node|
@@ -43,11 +43,7 @@ ruby_block 'data-discovery(sql)' do
       end
     end
     begin
-      credentials = Mash.new(
-        Chef::EncryptedDataBagItem.load(
-          node[:fission][:data][:sql][:credentials_data_bag], 'fission'
-        ).to_hash
-      )
+      credentials = credentials_for(:sql_datastore)
       node.run_state[:fission_sql_nodes] = Mash.new(:host => addrs.first).merge(credentials)
     rescue Net::HTTPServerException
       Chef::Log.warn "Fission data discovery found no credentials for SQL store"
@@ -84,13 +80,3 @@ file '/etc/fission/sql.json' do
   subscribes :create, 'ruby_block[data-discovery(sql)]', :immediately
   only_if{ node.run_state[:fission_sql_nodes] }
 end
-
-
-=begin
-discovery_all(
-  "recipes:riak AND fission_core_group:#{node.fission.core.group.gsub(':', '\:')}",
-  :raw_search => true,
-  :empty_ok => true,
-  :minimum_response_time_sec => false
-)
-=end
