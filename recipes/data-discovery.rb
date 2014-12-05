@@ -33,7 +33,7 @@ ruby_block 'data-discovery(sql)' do
       "fission_core_group:#{node[:fission][:core][:group].gsub(':', '*')}",
       'postgresql:*'
     ]
-    addrs = node.run_state[:fission_riak_nodes] = search(:node, search_query.join(' AND ')).map do |r_node|
+    addrs = node.run_state[:fission_sql_nodes] = search(:node, search_query.join(' AND ')).map do |r_node|
       address = node[:fission][:data][:sql][:address_attribute].split('.').inject(r_node) do |memo, key|
         if(memo && val = memo.send(key))
           val
