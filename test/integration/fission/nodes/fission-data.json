@@ -1,0 +1,11 @@
+{
+    "id": "fission-data01",
+    "run_list": ["recipe[fission::data]"],
+    "default": {
+      "fission_core_group": "yayayaya",
+      "fission_data_cluster": "joined"
+    },
+    "automatic": {
+      "ipaddress": "1.2.3.4"
+    }
+}
