@@ -11,12 +11,9 @@ action :enable do
     run_context.include_recipe 'repmgr'
   end
 
-  credentials = data_bag(node[:fission][:data][:sql][:credentials_data_bag]).map do |item|
-    Mash.new(
-      Chef::EncryptedDataBagItem.new(
-        item, Chef::EncryptedDataBagItem.load_secret
-      ).to_hash
-    )
+  databag = node[:fission][:data][:sql][:credentials_data_bag]
+  credentials = data_bag(databag).map do |item|
+    Mash.new(Chef::EncryptedDataBagItem.load(databag, item).to_hash)
   end
 
   credentials.each do |args|
