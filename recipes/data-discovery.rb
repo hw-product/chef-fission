@@ -1,3 +1,8 @@
+directory '/etc/fission' do
+  recursive true
+end
+
+
 ruby_block 'data-discovery(riak)' do
   block do
     search_query = [
