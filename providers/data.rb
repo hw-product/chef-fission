@@ -4,15 +4,13 @@ def load_current_resource
 end
 
 action :enable do
-  if new_resource.type == 'sql'
-    fission_data_sql new_resource.name do
-      repmgr new_resource.repmgr
-    end
-    elsif new_resource.type == 'riak'
-      fission_data_riak new_resource.name do
-      repmgr new_resource.repmgr
+
+  send("fission_data_#{new_resource.type}", new_resource.name) do
+    new_resource.proxy_attributes.each do |attr_name, attr_value|
+      self.send(attr_name, attr_value)
     end
   end
+
 end
 
 action :disable do
