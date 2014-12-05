@@ -4,29 +4,23 @@ driver:
 
 platforms:
 - name: ubuntu-12.04
-- name: macosx-10.9
   driver:
-    box: macosx-10.9
-    provider: vmware_fusion
-    customize:
-      memory: 2048
   provisioner:
+    name: chef_zero
     chef_omnibus_url: https://gist.github.com/fnichol/3c10e7e58625ebe63487/raw/732bee6bb97bbfabc7535357f62fc91d77e90e93/install.sh
   attributes:
-    nellie:
-      user: vagrant
-      group: admin
-    java:
-      dmg:
-        url: http://s3.amazonaws.com/temp.hw-ops.com/jdk-7u40-macosx-x64.dmg
+    fission:
+      core:
+        group: yayaya
+      data:
+        discovery: sql
+        stores:
+          sql:
+            type: sql
 
 suites:
-- name: default
+- name: fission
   run_list:
-  - recipe[nellie]
-  attributes:
-    nellie:
-      pkg_url: http://static.hw-ops.com/nellie-2c0b91b%2B20131210220630Z.jar
-      config:
-        options:
-          nellie: is_jenkins
+  - recipe[fission]
+  - recipe[fission::data]
+  - recipe[fission::data-discovery]
