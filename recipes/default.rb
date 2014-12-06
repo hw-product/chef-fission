@@ -7,17 +7,21 @@ node[:fission][:instances].each do |fission_name, fission_opts|
   # If we have a pkg_url then we know we have a jar build to configure
   # and run. However, we encounter no pkg_url it is assumed a gem
   # install and will install gems and proxy to jackal cookbook
-  fission fission_name do
-    if(fission_opts[:pkg_url])
+  if(fission_opts[:pkg_url])
+    fission fission_name do
       fission_opts.each do |attribute_name, attribute_value|
         self.send(attribute_name, attribute_value)
       end
-    else
-      include_recipe 'fission::fission-gems'
-      include_recipe 'jackal'
-      node.set[:jackal][:apps][fission_name] = fission_opts
     end
+  else
+    include_recipe 'fission::fission-gems'
+    node.set[:jackal][:apps][fission_name] = fission_opts
   end
+end
+
+if(node[:jackal][:apps])
+  node.set[:jackal][:exec_name] = 'fission'
+  include_recipe 'jackal'
 end
 
 # Loop attribute driven fission web app LWRP creation
