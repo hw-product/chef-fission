@@ -6,7 +6,7 @@ ruby_block 'data-discovery(riak)' do
   block do
     search_query = [
       "recipes:fission\\:\\:data",
-      "stack_grouping:#{node[:stack][:grouping]}",
+      "stack_grouping:#{node[:stack][:data][:grouping]}",
       'fission_data_cluster:joined'
     ]
     node.run_state[:fission_riak_nodes] = search(:node, search_query.join(' AND ')).map do |r_node|
@@ -29,7 +29,7 @@ ruby_block 'data-discovery(sql)' do
   block do
     search_query = [
       "recipes:fission\\:\\:data",
-      "stack_grouping:#{node[:stack][:grouping]}",
+      "stack_grouping:#{node[:stack][:data][:grouping]}",
       'postgresql:*'
     ]
     addrs = node.run_state[:fission_sql_nodes] = search(:node, search_query.join(' AND ')).map do |r_node|
