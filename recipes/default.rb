@@ -33,3 +33,24 @@ node[:fission][:web][:instances].each do |fission_name, fission_opts|
     end
   end
 end
+
+# enable nginx proxy to redirect HTTP->HTTPS
+if node[:fission][:web][:redirect_http] == true
+  include_recipe 'nginx'
+
+  nginx_site 'default' do
+    action :disable
+  end
+
+  template ::File.join(node[:nginx][:dir], 'sites-available', 'fission') do
+    owner node[:nginx][:user]
+    group node[:nginx][:group]
+    mode '0755'
+    source 'fission-nginx.erb'
+  end
+
+  nginx_site 'fission' do
+    action :enable
+  end
+
+end

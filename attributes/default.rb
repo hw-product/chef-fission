@@ -18,6 +18,7 @@ default[:fission][:service_timeout] = 60
 default[:fission][:web][:pkg_url] = "node[:fission][:pkg_url] must be set"
 default[:fission][:web][:directories][:install] = '/opt'
 default[:fission][:web][:directories][:config] = '/etc/fissionweb'
+default[:fission][:web][:redirect_http] = true
 
 default[:fission][:web][:user] = 'fissionweb'
 default[:fission][:web][:group] = 'fissionweb'
