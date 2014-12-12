@@ -40,7 +40,7 @@ action :enable do
 
       database PostgreSQL do |db|
         db.name = '#{args[:database]}'
-        db.username = '#{args[:user}'
+        db.username = '#{args[:user]}'
         db.password = '#{args[:password]}'
       end
 
@@ -54,8 +54,8 @@ action :enable do
       DEF
 
       schedule({
-        :minute => #{new_resource.backup_minute},
-        :hour   => #{new_resource.backup_hour}
+        :minute => new_resource.backup_minute,
+        :hour   => new_resource.backup_hour
       })
     end
   end
