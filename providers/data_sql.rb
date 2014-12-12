@@ -30,6 +30,35 @@ action :enable do
     not_if "su #{node[:fission][:data][:sql][:system_user]} -lc 'psql -ltA' | grep #{args[:database] || args[:user]}"
   end
 
+  if new_resource.backup == true
+    include_recipe 'backup'
+    backup_creds = credentials_for(node[:fission][:data][:backup_credentials])
+    backup_model :fission_db do
+      description "Fission DB backup"
+
+      definition <<-DEF
+
+      database PostgreSQL do |db|
+        db.name = '#{args[:database]}'
+        db.username = '#{args[:user}'
+        db.password = '#{args[:password]}'
+      end
+
+      compress_with Gzip
+
+      store_with S3 do |s3|
+        s3.access_key_id = '#{backup_creds[:access_key_id]}'
+        s3.secret_access_key = '#{backup_creds[:secret_access_key]}'
+        s3.bucket = '#{backup_creds[:bucket]}'
+      end
+      DEF
+
+      schedule({
+        :minute => #{new_resource.backup_minute},
+        :hour   => #{new_resource.backup_hour}
+      })
+    end
+  end
 end
 
 action :disable do
