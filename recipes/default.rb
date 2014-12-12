@@ -39,7 +39,7 @@ if node[:fission][:web][:redirect_http] == true
   include_recipe 'nginx'
 
   nginx_site 'default' do
-    action :disable
+    enable false
   end
 
   template ::File.join(node[:nginx][:dir], 'sites-available', 'fission') do
