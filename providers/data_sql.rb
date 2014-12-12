@@ -30,7 +30,7 @@ action :enable do
     not_if "su #{node[:fission][:data][:sql][:system_user]} -lc 'psql -ltA' | grep #{args[:database] || args[:user]}"
   end
 
-  if new_resource.backup == true
+  if node[:fission][:data][:sql][:backup] == true
     include_recipe 'backup'
     backup_creds = credentials_for(node[:fission][:data][:backup_credentials])
     backup_model :fission_db do
