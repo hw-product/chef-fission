@@ -54,8 +54,8 @@ action :enable do
       DEF
 
       schedule({
-        :minute => new_resource.backup_minute,
-        :hour   => new_resource.backup_hour
+        :minute => node[:fission][:data][:sql][:backup_minute],
+        :hour   => node[:fission][:data][:sql][:backup_hour]
       })
     end
   end
