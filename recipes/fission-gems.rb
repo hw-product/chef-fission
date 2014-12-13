@@ -35,6 +35,7 @@ end
 list.each do |gem_name|
 
   next if gem_name == 'fission-data' && !node.recipes.include?('fission::data-discovery')
+  next if gem_name.start_with?('fission-app')
 
   gem_package gem_name do
     action :install
