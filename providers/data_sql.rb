@@ -31,6 +31,7 @@ action :enable do
   end
 
   if node[:fission][:data][:sql][:backup] == true
+    run_context.include_recipe 'build-essential'
     run_context.include_recipe 'backup'
     backup_creds = credentials_for(node[:fission][:data][:backup_credentials])
     backup_model :fission_db do
