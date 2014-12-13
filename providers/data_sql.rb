@@ -43,6 +43,7 @@ action :enable do
         db.name = '#{args[:database]}'
         db.username = '#{args[:user]}'
         db.password = '#{args[:password]}'
+        db.host = '127.0.0.1'
       end
 
       compress_with Gzip
