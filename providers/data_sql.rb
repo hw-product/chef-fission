@@ -44,15 +44,6 @@ action :enable do
   require 'digest/sha2'
   require 'chef/digester'
 
-  ruby_block "copy latest backup" do
-    block do
-      ::FileUtils.cp(::File.join(::File.readlink(latest_symlink_path),"#{database}.tar"), ::File.join(backup_path, 'latest'))
-    end
-    not_if {Chef::Digester.checksum_for_file(::File.join(::File.readlink(latest_symlink_path),"#{database}.tar")) ==
-            Chef::Digester.checksum_for_file(::File.join(backup_path, 'latest',"#{database}.tar"))}
-    only_if {::File.exist?(backup_path)}
-  end
-
   import_guard_cmd = "su #{node[:fission][:data][:sql][:system_user]} -lc 'psql -ltA' | grep #{database}"
 
   sk_s3_file ::File.join(restore_dir, 's3_download') do
