@@ -47,7 +47,7 @@ action :enable do
   import_guard_cmd = "su #{node[:fission][:data][:sql][:system_user]} -lc 'psql -ltA' | grep #{database}"
 
   sk_s3_file ::File.join(restore_dir, 's3_download') do
-    remote_path "/backups/#{database}/latest/#{database}.tar"
+    remote_path "/backups/#{database}/latest.tar"
     bucket backup_creds[:bucket]
     aws_access_key_id backup_creds[:access_key_id]
     aws_secret_access_key backup_creds[:secret_access_key]
@@ -138,9 +138,19 @@ action :enable do
       end
 
       after do |exit_status|
+
         latest = Dir["#{::File.join(backup_path, '*')}"].sort_by{|f|::File.mtime(f)}.last
         if latest
-          ::File.cp(::File.join(latest, 'fission.tar'), ::File.join('#{backup_path}', 'latest.tar')
+          FileUtils.cp(::File.join(latest, 'fission.tar'), ::File.join('#{backup_path}', 'latest.tar'))
+          connection = Fog::Storage.new({
+            :provider                 => 'AWS',
+            :aws_access_key_id        => '#{backup_creds[:access_key_id]}',
+            :aws_secret_access_key    => '#{backup_creds[:secret_access_key]}'
+          })
+          bucket = connection.directories.get('#{backup_creds[:bucket]}')
+          bucket.files.create(
+            :key => 'backups/#{database}/latest.tar',
+            :body => ::File.open(::File.join('#{backup_path}', 'latest.tar')))
         end
       end
 
