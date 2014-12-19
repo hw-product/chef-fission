@@ -8,3 +8,4 @@ default[:fission][:data][:sql][:credentials_data_bag] = "credentials"
 default[:fission][:data][:sql][:backup] = false
 default[:fission][:data][:sql][:backup_hour] = 0
 default[:fission][:data][:sql][:backup_minute] = 0
+default[:fission][:data][:sql][:backup_directory] = "/opt/backup"
