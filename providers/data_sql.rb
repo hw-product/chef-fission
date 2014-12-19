@@ -166,8 +166,8 @@ action :enable do
       DEF
 
       schedule({
-        :minute => node[:fission][:data][:sql][:backup_minute],
-        :hour   => node[:fission][:data][:sql][:backup_hour]
+        :minute => node[:fission][:data][:sql][:backup][:minute],
+        :hour   => node[:fission][:data][:sql][:backup][:hour]
       })
       cron_options({
         path: '/opt/chef/embedded/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
