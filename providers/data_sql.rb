@@ -17,6 +17,7 @@ action :enable do
   end
 
   args = credentials_for(new_resource.name)
+  slack_credentials = credentials_for('slack')
   database = (args[:database] || args[:user])
   backup_base_dir = node[:fission][:data][:sql][:backup][:directory]
   backup_path = ::File.join(backup_base_dir, database)
@@ -159,8 +160,8 @@ action :enable do
         slack.on_warning = #{node[:fission][:data][:sql][:backup][:slack][:on_warning]}
         slack.on_failure = #{node[:fission][:data][:sql][:backup][:slack][:on_failure]}
 
-        slack.team = "#{node[:fission][:data][:sql][:backup][:slack][:team]}"
-        slack.token = "#{node[:fission][:data][:sql][:backup][:slack][:token]}"
+        slack.team = "#{slack_credentials[:team]}"
+        slack.token = "#{slack_credentials[:token]}"
       end
 
       DEF
