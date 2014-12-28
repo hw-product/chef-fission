@@ -34,11 +34,8 @@ node[:fission][:web][:instances].each do |fission_name, fission_opts|
   end
 end
 
-# logrotate all the things
-include_recipe 'log_rotations'
-
 # enable nginx proxy to redirect HTTP->HTTPS
-if node[:fission][:web][:redirect_http] == true
+if(node[:fission][:web][:redirect_http] == true)
   include_recipe 'nginx'
 
   nginx_site 'default' do
