@@ -61,8 +61,10 @@ action :enable do
 
   ruby_block "rename s3 download" do
     block do
-      FileUtils.mv(::File.join(restore_dir, 's3_download'),
-                   ::File.join(restore_dir, 'latest.tar'))
+      FileUtils.mv(
+        ::File.join(restore_dir, 's3_download'),
+        ::File.join(restore_dir, 'latest.tar')
+      )
     end
     action :nothing
   end
@@ -105,7 +107,7 @@ action :enable do
   end
 
 
-  if node[:fission][:data][:sql][:backup][:enabled] == true
+  if(node[:fission][:data][:sql][:backup][:enabled] == true)
 
     run_context.include_recipe 'build-essential'
     run_context.include_recipe 'backup'
@@ -166,13 +168,13 @@ action :enable do
 
       DEF
 
-      schedule({
+      schedule(
         :minute => node[:fission][:data][:sql][:backup][:minute],
         :hour   => node[:fission][:data][:sql][:backup][:hour]
-      })
-      cron_options({
-        path: '/opt/chef/embedded/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
-      })
+      )
+      cron_options(
+        :path => '/opt/chef/embedded/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
+      )
 
     end
   end
