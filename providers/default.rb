@@ -78,7 +78,7 @@ action :install do
         Mash.new(Chef::JSONCompat.from_json(Chef::JSONCompat.to_json(node[:fission][:default_config].fetch(:instance, Mash.new)))),
         Mash.new(Chef::JSONCompat.from_json(Chef::JSONCompat.to_json(new_resource.configuration)))
       )
-    )
+    ).gsub('$NODE_NAME$', node.name)
     mode 0644
   end
 
