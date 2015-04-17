@@ -1,6 +1,7 @@
 actions :install, :uninstall
 default_action :install
 
+attribute :system_package_url, :kind_of => String
 attribute :package_url, :kind_of => String
 attribute :install_directory, :kind_of => String
 attribute :config_directory, :kind_of => String
