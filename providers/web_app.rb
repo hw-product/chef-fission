@@ -28,12 +28,20 @@ action :install do
   chef_gem 'xml-simple'
   require 'xmlsimple'
 
-  jar_path = ::File.join(
-    new_resource.install_directory,
-    ::File.basename(
-      URI.parse(new_resource.package_url).path
+  if(new_resource.package_url)
+    jar_path = ::File.join(
+      new_resource.install_directory,
+      ::File.basename(
+        URI.parse(new_resource.package_url).path
+      )
     )
-  )
+  else
+    jar_path = ::File.join(
+      new_resource.install_directory,
+      'fission/fission.jar'
+    )
+  end
+
   current_jar_path = ::File.join(
     new_resource.install_directory,
     new_resource.name
@@ -62,9 +70,27 @@ action :install do
     recursive true
   end
 
-  remote_file jar_path do
-    source new_resource.package_url
-    mode 0644
+  if(new_resource.package_url)
+
+    remote_file jar_path do
+      source new_resource.package_url
+      mode 0644
+    end
+
+  else
+    cache_path = ::File.join(Chef::Config[:file_cache_path], "#{new_resource.name}.syspkg")
+
+    remote_file cache_path do
+      source new_resource.system_package_url
+      mode 0644
+      notifies :install, "package[#{cache_path}]", :immediately
+    end
+
+    package 'fission-app' do
+      source cache_path
+      action :nothing
+    end
+
   end
 
   link current_jar_path do
