@@ -7,7 +7,7 @@ node[:fission][:instances].each do |fission_name, fission_opts|
   # If we have a pkg_url then we know we have a jar build to configure
   # and run. However, we encounter no pkg_url it is assumed a gem
   # install and will install gems and proxy to jackal cookbook
-  if(fission_opts[:package_url])
+  if(fission_opts[:package_url] || fission_opts[:system_package_url])
     fission fission_name do
       fission_opts.each do |attribute_name, attribute_value|
         self.send(attribute_name, attribute_value)
