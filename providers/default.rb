@@ -76,6 +76,7 @@ action :install do
     remote_file jar_path do
       source new_resource.package_url
       mode 0644
+      notifies :restart, "runit_service[#{new_resource.name}]"
     end
 
   else
@@ -84,6 +85,7 @@ action :install do
     dpkg_package 'fission' do
       source cache_path
       action :nothing
+      notifies :restart, "runit_service[#{new_resource.name}]"
     end
 
     remote_file cache_path do
