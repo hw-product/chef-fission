@@ -9,7 +9,7 @@ def load_current_resource
     :config_directory => node[:fission][:web][:directories][:config],
     :user => node[:fission][:web][:user],
     :group => node[:fission][:web][:group],
-    :package_url => node[:fission][:web][:pkg_url],
+#    :package_url => node[:fission][:web][:pkg_url],
     :java_options => node[:fission][:web][:java_options]
   }.each do |resource_method, default_value|
     unless(new_resource.send(resource_method))
@@ -38,7 +38,7 @@ action :install do
   else
     jar_path = ::File.join(
       new_resource.install_directory,
-      'fission/fission.jar'
+      'fission-app/fission-app.war'
     )
   end
 
@@ -82,11 +82,12 @@ action :install do
 
     remote_file cache_path do
       source new_resource.system_package_url
+      headers 'Accept' => 'application/octet-stream'
       mode 0644
-      notifies :install, "package[#{cache_path}]", :immediately
+      notifies :install, "dpkg_package[fission-app]", :immediately
     end
 
-    package 'fission-app' do
+    dpkg_package 'fission-app' do
       source cache_path
       action :nothing
     end

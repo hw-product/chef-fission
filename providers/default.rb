@@ -9,7 +9,7 @@ def load_current_resource
     :config_directory => node[:fission][:directories][:config],
     :user => node[:fission][:user],
     :group => node[:fission][:group],
-    :package_url => node[:fission][:pkg_url],
+#    :package_url => node[:fission][:pkg_url],
     :java_options => node[:fission][:java_options]
   }.each do |resource_method, default_value|
     unless(new_resource.send(resource_method))
@@ -81,15 +81,16 @@ action :install do
   else
     cache_path = ::File.join(Chef::Config[:file_cache_path], "#{new_resource.name}.syspkg")
 
-    remote_file cache_path do
-      source new_resource.system_package_url
-      mode 0644
-      notifies :install, "package[#{cache_path}]", :immediately
-    end
-
-    package 'fission' do
+    dpkg_package 'fission' do
       source cache_path
       action :nothing
+    end
+
+    remote_file cache_path do
+      source new_resource.system_package_url
+      headers 'Accept' => 'application/octet-stream'
+      mode 0644
+      notifies :install, "dpkg_package[fission]", :immediately
     end
 
   end
