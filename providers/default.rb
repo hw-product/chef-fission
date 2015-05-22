@@ -22,6 +22,11 @@ action :install do
   run_context.include_recipe 'fission::setup'
   run_context.include_recipe 'fission::java'
 
+  new_resource.config_directory = ::File.join(
+    new_resource.config_directory,
+    new_resource.name
+  )
+
   if(new_resource.package_url)
     jar_path = ::File.join(
       new_resource.install_directory,
@@ -155,7 +160,7 @@ action :install do
         :java_path => node[:fission][:java_path],
         :java_options => new_resource.java_options,
         :jar_path => current_jar_path,
-        :config_file => config_file
+        :config_file => ::File.dirname(config_file)
       )
       restart_on_update false
       default_logger true
