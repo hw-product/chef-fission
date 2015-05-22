@@ -22,7 +22,7 @@ action :install do
   run_context.include_recipe 'fission::setup'
   run_context.include_recipe 'fission::java'
 
-  new_resource.config_directory = ::File.join(
+  new_resource.config_directory ::File.join(
     new_resource.config_directory,
     new_resource.name
   )
