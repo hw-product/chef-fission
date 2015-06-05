@@ -9,7 +9,7 @@ def load_current_resource
     :config_directory => node[:fission][:directories][:config],
     :user => node[:fission][:user],
     :group => node[:fission][:group],
-#    :package_url => node[:fission][:pkg_url],
+    :package_url => node[:fission][:pkg_url],
     :java_options => node[:fission][:java_options]
   }.each do |resource_method, default_value|
     unless(new_resource.send(resource_method))
@@ -27,19 +27,10 @@ action :install do
     new_resource.name
   )
 
-  if(new_resource.package_url)
-    jar_path = ::File.join(
-      new_resource.install_directory,
-      ::File.basename(
-        URI.parse(new_resource.package_url).path
-      )
-    )
-  else
-    jar_path = ::File.join(
-      new_resource.install_directory,
-      'fission/fission.jar'
-    )
-  end
+  jar_path = ::File.join(
+    new_resource.install_directory,
+    'fission/fission.jar'
+  )
 
   current_jar_path = ::File.join(
     new_resource.install_directory,
@@ -76,30 +67,19 @@ action :install do
     recursive true
   end
 
-  if(new_resource.package_url)
+  cache_path = ::File.join(Chef::Config[:file_cache_path], "#{new_resource.name}.syspkg")
 
-    remote_file jar_path do
-      source new_resource.package_url
-      mode 0644
-      notifies :restart, "runit_service[#{new_resource.name}]"
-    end
+  dpkg_package 'fission' do
+    source cache_path
+    action :nothing
+    notifies :restart, "runit_service[#{new_resource.name}]"
+  end
 
-  else
-    cache_path = ::File.join(Chef::Config[:file_cache_path], "#{new_resource.name}.syspkg")
-
-    dpkg_package 'fission' do
-      source cache_path
-      action :nothing
-      notifies :restart, "runit_service[#{new_resource.name}]"
-    end
-
-    remote_file cache_path do
-      source new_resource.system_package_url
-      headers 'Accept' => 'application/octet-stream'
-      mode 0644
-      notifies :install, "dpkg_package[fission]", :immediately
-    end
-
+  remote_file cache_path do
+    source new_resource.system_package_url
+    headers 'Accept' => 'application/octet-stream'
+    mode 0644
+    notifies :install, "dpkg_package[fission]", :immediately
   end
 
   link current_jar_path do

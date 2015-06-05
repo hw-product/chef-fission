@@ -9,7 +9,7 @@ def load_current_resource
     :config_directory => node[:fission][:web][:directories][:config],
     :user => node[:fission][:web][:user],
     :group => node[:fission][:web][:group],
-#    :package_url => node[:fission][:web][:pkg_url],
+    :package_url => node[:fission][:web][:pkg_url],
     :java_options => node[:fission][:web][:java_options]
   }.each do |resource_method, default_value|
     unless(new_resource.send(resource_method))
@@ -28,19 +28,10 @@ action :install do
   chef_gem 'xml-simple'
   require 'xmlsimple'
 
-  if(new_resource.package_url)
-    jar_path = ::File.join(
-      new_resource.install_directory,
-      ::File.basename(
-        URI.parse(new_resource.package_url).path
-      )
-    )
-  else
-    jar_path = ::File.join(
-      new_resource.install_directory,
-      'fission-app/fission-app.war'
-    )
-  end
+  jar_path = ::File.join(
+    new_resource.install_directory,
+    'fission-app/fission-app.war'
+  )
 
   current_jar_path = ::File.join(
     new_resource.install_directory,
@@ -70,30 +61,19 @@ action :install do
     recursive true
   end
 
-  if(new_resource.package_url)
+  cache_path = ::File.join(Chef::Config[:file_cache_path], "#{new_resource.name}.syspkg")
 
-    remote_file jar_path do
-      source new_resource.package_url
-      mode 0644
-      notifies :restart, "runit_service[#{new_resource.name}]"
-    end
+  remote_file cache_path do
+    source new_resource.system_package_url
+    headers 'Accept' => 'application/octet-stream'
+    mode 0644
+    notifies :install, "dpkg_package[fission-app]", :immediately
+  end
 
-  else
-    cache_path = ::File.join(Chef::Config[:file_cache_path], "#{new_resource.name}.syspkg")
-
-    remote_file cache_path do
-      source new_resource.system_package_url
-      headers 'Accept' => 'application/octet-stream'
-      mode 0644
-      notifies :install, "dpkg_package[fission-app]", :immediately
-    end
-
-    dpkg_package 'fission-app' do
-      source cache_path
-      action :nothing
-      notifies :restart, "runit_service[#{new_resource.name}]"
-    end
-
+  dpkg_package 'fission-app' do
+    source cache_path
+    action :nothing
+    notifies :restart, "runit_service[#{new_resource.name}]"
   end
 
   link current_jar_path do
