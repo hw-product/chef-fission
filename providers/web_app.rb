@@ -16,7 +16,6 @@ def load_current_resource
       new_resource.send(resource_method, default_value)
     end
   end
-  new_resource.package_url(node.run_state[:fission_web_pkg_url])
 end
 
 action :install do
@@ -65,7 +64,7 @@ action :install do
   cache_path = ::File.join(Chef::Config[:file_cache_path], "#{new_resource.name}.syspkg")
 
   remote_file cache_path do
-    source new_resource.system_package_url
+    source new_resource.package_url
     headers 'Accept' => 'application/octet-stream'
     mode 0644
     notifies :install, "dpkg_package[fission-app]", :immediately
