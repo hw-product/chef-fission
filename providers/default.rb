@@ -9,7 +9,7 @@ def load_current_resource
     :config_directory => node[:fission][:directories][:config],
     :user => node[:fission][:user],
     :group => node[:fission][:group],
-    :package_url => node[:fission][:pkg_url] || node.run_state[:fission_pkg_url],
+    :package_url => node.run_state[:fission_pkg_url],
     :java_options => node[:fission][:java_options]
   }.each do |resource_method, default_value|
     unless(new_resource.send(resource_method))
