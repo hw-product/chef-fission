@@ -16,6 +16,7 @@ def load_current_resource
       new_resource.send(resource_method, default_value)
     end
   end
+  new_resource.package_url(node.run_state[:fission_pkg_url])
 end
 
 action :install do
