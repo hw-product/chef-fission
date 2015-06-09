@@ -1,5 +1,10 @@
 include_recipe 'fission::setup'
 
+directory node[:fission][:working_directory] do
+  owner node[:fission][:user]
+  group node[:fission][:group]
+end
+
 # Loop attribute driven fission LWRP creation
 
 node[:fission][:instances].each do |fission_name, fission_opts|
