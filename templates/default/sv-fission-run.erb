@@ -1,4 +1,3 @@
 #! /bin/sh
 exec 2>&1
-exec chpst -u <%= @options[:user] %>:<%= @options[:group] %> <%= @options[:java_path] %> <%= Array(@options[:java_options]).join(" ") %> -jar <%= @options[:jar_path] %> -c <%= @options[:config_file] %>
-
+exec chpst -u <%= @options[:user] %>:<%= @options[:group] %> <%= @options[:java_path] %> <%= Array(@options[:java_options]).join(" ") %> -XX:OnOutOfMemoryError="kill -9 %p" -jar <%= @options[:jar_path] %> -c <%= @options[:config_file] %>
