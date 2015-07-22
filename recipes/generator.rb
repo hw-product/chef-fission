@@ -13,7 +13,7 @@ ruby_block 'fission generator[set key]' do
       if(key_id)
         result = Mash.new
         val = [:default_config, :instance, :fission, :repository_generator, :signing_key].inject(result) do |memo, k|
-          memo[k] = Mash.new
+          memo[k] ||= Mash.new
         end
         val[:default] = key_id
         node.default[:fission] = Chef::Mixin::DeepMerge.merge(Mash.new(JSONCompat.from_json(JSONCompat.to_json(node[:fission]))), result)
