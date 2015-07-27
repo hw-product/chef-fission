@@ -23,3 +23,14 @@ ruby_block 'fission generator[set key]' do
   action :nothing
   subscribes :create, 'gpg_import[packager]', :immediately
 end
+
+reaper_config = credentials_for(:reaper_man)
+
+fission_service = resources('runit_service[pipeline]')
+
+if(fission_service)
+  Chef::Log.info 'Added custom ReaperMan environment configuration to pipeline service'
+  fission_service.env = reaper_config[:env]
+else
+  Chef::Log.warn 'Failed to locate pipeline service for ReaperMan environment configuration!'
+end
