@@ -29,7 +29,7 @@ reaper_config = credentials_for(:reaper_man)
 fission_service = resources('fission[pipeline]')
 if(fission_service)
   Chef::Log.info 'Added custom ReaperMan environment configuration to pipeline service'
-  fission_service.environment = reaper_config[:env]
+  fission_service.environment reaper_config[:env]
 else
   Chef::Log.warn 'Failed to locate pipeline service for ReaperMan environment configuration!'
 end
