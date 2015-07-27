@@ -142,6 +142,9 @@ action :install do
         :jar_path => current_jar_path,
         :config_file => ::File.dirname(config_file)
       )
+      if(new_resource.environment)
+        env new_resource.environment
+      end
       restart_on_update false
       default_logger true
       subscribes :restart, "link[#{current_jar_path}]"

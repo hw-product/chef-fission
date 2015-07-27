@@ -10,3 +10,4 @@ attribute :user, :kind_of => String, :default => 'fission'
 attribute :group, :kind_of => String
 attribute :configuration, :kind_of => Hash
 attribute :sudo, :kind_of => [TrueClass, FalseClass], :default => false
+attribute :environment, :kind_of => Hash
