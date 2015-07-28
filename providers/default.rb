@@ -142,9 +142,13 @@ action :install do
         :jar_path => current_jar_path,
         :config_file => ::File.dirname(config_file)
       )
-      if(new_resource.environment)
-        env new_resource.environment
-      end
+      env(
+        {
+          'FISSION_APPLICATION_NAME' => new_resource.name
+        }.merge(
+          new_resource.environment || {}
+        )
+      )
       restart_on_update false
       default_logger true
       subscribes :restart, "link[#{current_jar_path}]"
