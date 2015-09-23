@@ -20,22 +20,15 @@ end
 
 action :install do
   run_context.include_recipe 'fission::setup'
-  run_context.include_recipe 'fission::java'
+  if(new_resource.java)
+    run_context.include_recipe 'fission::java'
+  end
 
   new_resource.config_directory ::File.join(
     new_resource.config_directory,
     new_resource.name
   )
 
-  jar_path = ::File.join(
-    new_resource.install_directory,
-    'fission/fission.jar'
-  )
-
-  current_jar_path = ::File.join(
-    new_resource.install_directory,
-    new_resource.name
-  )
   config_file = ::File.join(
     new_resource.config_directory,
     "#{new_resource.name}.json"
@@ -82,8 +75,20 @@ action :install do
     notifies :install, "dpkg_package[fission]", :immediately
   end
 
-  link current_jar_path do
-    to jar_path
+  if(new_resource.java)
+    jar_path = ::File.join(
+      new_resource.install_directory,
+      'fission/fission.jar'
+    )
+
+    current_jar_path = ::File.join(
+      new_resource.install_directory,
+      new_resource.name
+    )
+
+    link current_jar_path do
+      to jar_path
+    end
   end
 
   file config_file do
@@ -132,27 +137,49 @@ action :install do
   else
     run_context.include_recipe 'runit'
 
-    runit_service new_resource.name do
-      run_template_name 'fission'
-      options(
-        :user => new_resource.user,
-        :group => new_resource.group,
-        :java_path => node[:fission][:java_path],
-        :java_options => new_resource.java_options,
-        :jar_path => current_jar_path,
-        :config_file => ::File.dirname(config_file)
-      )
-      env(
-        {
-          'FISSION_APPLICATION_NAME' => new_resource.name
-        }.merge(
-          new_resource.environment || {}
+    if(new_resource.java)
+      runit_service new_resource.name do
+        run_template_name 'fission'
+        options(
+          :user => new_resource.user,
+          :group => new_resource.group,
+          :java_path => node[:fission][:java_path],
+          :java_options => new_resource.java_options,
+          :jar_path => current_jar_path,
+          :config_file => ::File.dirname(config_file)
         )
-      )
-      restart_on_update false
-      default_logger true
-      subscribes :restart, "link[#{current_jar_path}]"
-      subscribes :restart, "file[#{config_file}]"
+        env(
+          {
+            'FISSION_APPLICATION_NAME' => new_resource.name
+          }.merge(
+            new_resource.environment || {}
+          )
+        )
+        restart_on_update false
+        default_logger true
+        subscribes :restart, "link[#{current_jar_path}]"
+        subscribes :restart, "file[#{config_file}]"
+      end
+    else
+      runit_service new_resource.name do
+        run_template_name 'fission-ruby'
+        options(
+          :user => new_resource.user,
+          :group => new_resource.group,
+          :script_path => '/usr/local/fission/bin/fission',
+          :config_file => ::File.dirname(config_file)
+        )
+        env(
+          {
+            'FISSION_APPLICATION_NAME' => new_resource.name
+          }.merge(
+            new_resource.environment || {}
+          )
+        )
+        restart_on_update false
+        default_logger true
+        subscribes :restart, "file[#{config_file}]"
+      end
     end
   end
 end
