@@ -29,7 +29,7 @@ action :enable do
   execute "data store user(sql - #{args[:user]})" do
     command "psql -c \"create user #{args[:user]} with password '#{args[:password]}' login\""
     user node[:fission][:data][:sql][:system_user]
-    not_if "sudo -u #{node[:fission][:data][:sql][:system_user]} -i \"psql -tAc 'select * from pg_roles'\" | grep #{args[:user]}"
+    not_if "psql -tAc 'select * from pg_roles' | grep #{args[:user]}"
   end
 
   [backup_base_dir, restore_dir].each do |dir|
@@ -45,7 +45,7 @@ action :enable do
   require 'digest/sha2'
   require 'chef/digester'
 
-  import_guard_cmd = "sudo -u #{node[:fission][:data][:sql][:system_user]} -i 'psql -ltA' | grep #{database}"
+  import_guard_cmd = "psql -ltA | grep #{database}"
 
   sk_s3_file ::File.join(restore_dir, 's3_download') do
     remote_path "/backups/#{database}/latest.tar"
@@ -103,7 +103,7 @@ action :enable do
   execute "data store database(sql - #{database})" do
     command "createdb #{database} -O #{args[:user]}"
     user node[:fission][:data][:sql][:system_user]
-    not_if "sudo -u #{node[:fission][:data][:sql][:system_user]} -i 'psql -ltA' | grep #{database}"
+    not_if "psql -ltA | grep #{database}"
   end
 
 
