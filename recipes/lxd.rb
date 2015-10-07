@@ -42,7 +42,7 @@ execute 'update apt in base ubuntu' do
 end
 
 execute 'install packages to base ubuntu' do
-  command 'lxc exec base-ubuntu -- apt-get install ruby2.2 ruby2.2-dev libyajl-dev build-essential -qy'
+  command 'lxc exec base-ubuntu -- apt-get install ruby2.2 ruby2.2-dev libyajl-dev build-essential zip unzip -qy'
   not_if 'lxc image info fission-default'
 end
 

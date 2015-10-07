@@ -8,6 +8,6 @@ default[:fission][:lxd][:images] = {
   :ubuntu_1404 => 'ubuntu/trusty/amd64',
   :ubuntu_1504 => 'ubuntu/vivid/amd64'
 }
-default[:fission][:lxd][:packages][:centos] = ['autoconf', 'bison', 'flex', 'make', 'gcc', 'gcc-c++', 'kernel-devel', 'm4', 'patch', 'curl']
-default[:fission][:lxd][:packages][:default] = ['build-essential', 'curl']
+default[:fission][:lxd][:packages][:centos] = ['autoconf', 'bison', 'flex', 'make', 'gcc', 'gcc-c++', 'kernel-devel', 'm4', 'patch', 'curl', 'unzip', 'zip']
+default[:fission][:lxd][:packages][:default] = ['build-essential', 'curl', 'zip', 'unzip']
 default[:fission][:lxd][:password] = SecureRandom.hex
