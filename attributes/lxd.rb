@@ -10,3 +10,4 @@ default[:fission][:lxd][:images] = {
 }
 default[:fission][:lxd][:packages][:centos] = ['autoconf', 'bison', 'flex', 'make', 'gcc', 'gcc-c++', 'kernel-devel', 'm4', 'patch', 'curl']
 default[:fission][:lxd][:packages][:default] = ['build-essential', 'curl']
+default[:fission][:lxd][:password] = SecureRandom.hex

@@ -1,5 +1,15 @@
 # We assume up front lxd is here
 
+execute 'open lxd API' do
+  command 'lxc config set core.https_address [::]:8443'
+  not_if{ node[:ohai_time] }
+end
+
+execute 'set lxd password' do
+  command "lxc config set core.trust_password #{node[:fission][:lxd][:password]}"
+  not_if{ node[:ohai_time] }
+end
+
 execute 'add lxd images server' do
   command 'lxc remote add images images.linuxcontainers.org'
   not_if 'lxc remote list | grep images.linuxcontainers.org'
