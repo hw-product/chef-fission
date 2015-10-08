@@ -21,7 +21,7 @@ lxd_node = search(:node, "roles:lxd").first
 
 if(lxd_node)
   node[:fission][:instances].each do |fission_name, fission_opts|
-    fission_opts.default[:configuration][:fission][:remote_process] = Mash.new(
+    node.default[:fission][:instances][fission_name][:configuration][:fission][:remote_process] = Mash.new(
       :api_endpoint => "https://#{lxd_node.ipaddress}:8443",
       :password => node[:stack][:grouping],
       :ssl_key => '/etc/fission/ssl/lxd.key',

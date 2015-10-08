@@ -46,6 +46,11 @@ execute 'install packages to base ubuntu' do
   not_if 'lxc image info fission-default'
 end
 
+execute 'install expected gems' do
+  command 'lxc exec base-ubuntu -- gem install --no-document attribute_struct'
+  not_if 'lxc image info fission-default'
+end
+
 execute 'stop base ubuntu' do
   command 'lxc stop base-ubuntu'
   not_if 'lxc image info fission-default'
