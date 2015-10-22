@@ -47,7 +47,7 @@ execute 'install packages to base ubuntu' do
 end
 
 execute 'install expected gems' do
-  command 'lxc exec base-ubuntu -- gem install --no-document attribute_struct'
+  command 'lxc exec base-ubuntu -- gem install --no-document attribute_struct bundler'
   not_if 'lxc image info fission-default'
 end
 
