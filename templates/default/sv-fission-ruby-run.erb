@@ -1,3 +1,4 @@
 #! /bin/sh
+export HOME=/home/fission
 exec 2>&1
 exec chpst -u <%= @options[:user] %>:<%= @options[:group] %> <%= @options[:script_path] %> -c <%= @options[:config_file] %>
