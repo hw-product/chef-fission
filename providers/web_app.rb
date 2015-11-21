@@ -140,6 +140,12 @@ action :install do
 
     runit_service new_resource.name do
       run_template_name 'fission-web'
+      control ['d', 't', 'x']
+      control_template_names(
+        'd' => 'fission-web',
+        't' => 'fission-web',
+        'x' => 'fission-web'
+      )
       options(
         :user => new_resource.user,
         :group => new_resource.group,
