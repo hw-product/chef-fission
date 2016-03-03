@@ -1,0 +1,4 @@
+Batali.define do
+  source 'https://supermarket.chef.io'
+  metadata
+end
