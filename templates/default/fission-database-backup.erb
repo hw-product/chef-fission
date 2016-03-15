@@ -1,0 +1,12 @@
+#!/bin/bash
+set -e
+
+mkdir -p /tmp/fission-backup
+chown :postgres /tmp/fission-backup
+chmod 0770 /tmp/fission-backup
+cd /tmp/fission-backup
+sudo -u postgres pg_dump -d <%= node[:fission][:data][:name] %> --file /tmp/fission-backup/latest.dump --create
+tar czf latest.tgz ./latest.dump
+aws s3 cp ./latest.tgz s3://<%= node[:fission][:data][:bucket] %>/fission-database/latest.tgz
+aws s3 cp s3://<%= node[:fission][:data][:bucket] %>/latest.tgz s3://<%= node[:fission][:data][:bucket] %>/fission-database/`date +%s`.tgz
+rm -rf /tmp/fission-backup
