@@ -8,7 +8,7 @@ node.default[:postgresql][:pg_hba] = node.default[:postgresql][:pg_hba].push(
 
 execute 'create-fission-user' do
   command "psql -c \"create user #{node[:fission][:data][:username]} with password '#{node[:fission][:data][:password]}' login\""
-  not_if "psql -c \"select * from pg_roles where rolname = '#{node[:fission][:data][:username]}'\""
+  not_if "psql -c \"select * from pg_roles where rolname = '#{node[:fission][:data][:username]}'\" | grep #{node[:fission][:data][:username]}"
   user 'postgres'
 end
 
