@@ -14,7 +14,7 @@ end
 
 execute 'create-fission-database' do
   command "createdb #{node[:fission][:data][:name]} -O #{node[:fission][:data][:username]}"
-  not_if "psql -c '\d' fission"
+  not_if "psql -c '\\d' fission"
   user 'postgres'
 end
 
