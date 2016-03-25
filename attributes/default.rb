@@ -6,6 +6,7 @@ default[:fission][:java_version] = 7
 
 default[:fission][:user] = 'fission'
 default[:fission][:group] = 'fission'
+default[:fission][:home] = '/opt/fission-home'
 default[:fission][:java_path] = '/usr/bin/java'
 default[:fission][:java_options] = [
   '-Xms1024M',
@@ -28,6 +29,44 @@ default[:fission][:web][:java_options] = [
   '-Xms1024M',
   '-Xmx1024M'
 ]
+
+default[:fission][:web][:log_config] = {
+  :configuration => {
+    :appender => [
+      {
+        :@name => 'file',
+        :@class => 'ch.qos.logback.core.rolling.RollingFileAppender',
+        :File => '/var/log/fission-web',
+        :encoder => {
+          :pattern => '%d{yyyy-MM-dd HH:mm:ss} %-5p %c{1}:%L - %m'
+        },
+        :rollingPolicy => {
+          :@class => 'ch.qos.logback.core.rolling.FixedWindowRollingPolicy',
+          :maxIndex => 10,
+          :FileNamePattern => '/var/log/fission-web.%i'
+        },
+        :triggeringPolicy => {
+          :@class => 'ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy',
+          :MaxFileSize => '50MB'
+        }
+      },
+      {
+        :@name => 'stdout',
+        :@class => 'ch.qos.logback.core.ConsoleAppender',
+        :Target => 'System.out',
+        :encoder => {
+          :pattern => '%d{yyyy-MM-dd HH:mm:ss} %-5p %c{1}:%L - %m'
+        }
+      }
+    ],
+    :root => {
+      :@level => 'INFO',
+      'appender-ref' => [
+        {:@ref => 'file'}, {:@ref => 'stdout'}
+      ]
+    }
+  }
+}
 
 default[:fission][:web][:instances] = {}
 
