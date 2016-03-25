@@ -40,7 +40,7 @@ file '/etc/fission-web/log.xml' do
 end
 
 remote_file '/opt/fission-web.war' do
-  source node[:fission][:web][:url]
+  source node[:fission][:web][:asset]
   mode 0644
 end
 
