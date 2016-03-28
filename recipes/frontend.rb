@@ -14,11 +14,11 @@ directory node[:fission][:home] do
   owner node[:fission][:user]
 end
 
-directory '/etc/fission-web' do
+directory '/etc/fission' do
   mode 0755
 end
 
-file '/etc/fission-web/app.json' do
+file '/etc/fission/web-app.json' do
   content Chef::JSONCompat.to_json_pretty(
     Chef::Mixin::DeepMerge.merge(
       node[:fission][:default_config].fetch(:web, {}),
@@ -28,7 +28,7 @@ file '/etc/fission-web/app.json' do
   mode 0644
 end
 
-file '/etc/fission-web/log.xml' do
+file '/etc/fission/log.xml' do
   content(
     XmlSimple.xml_out(
       node[:fission][:web][:log_config],
@@ -37,6 +37,17 @@ file '/etc/fission-web/log.xml' do
     )
   )
   mode 0644
+end
+
+file '/etc/fission/sql.json' do
+  content Chef::JSONCompat.to_json_pretty(
+    :database => node[:fission][:data][:name],
+    :host => node[:fission][:data].fetch(:host, '127.0.0.1'),
+    :user => node[:fission][:data][:username],
+    :password => node[:fission][:data][:password]
+  )
+  mode 0600
+  owner node[:fission][:user]
 end
 
 remote_file '/opt/fission-web.war' do
@@ -58,12 +69,12 @@ runit_service 'fission-web' do
     :java_path => node[:fission][:java_path],
     :java_options => node[:fission][:web][:java_options],
     :jar_path => '/opt/fission-web.war',
-    :log_config_file => '/etc/fission-web/log.xml',
+    :log_config_file => '/etc/fission/log.xml',
     :logger_config_name => 'configurationFile',
-    :config_file => '/etc/fission-web/app.json'
+    :config_file => '/etc/fission/web-app.json'
   )
   restart_on_update false
   default_logger true
-  subscribes :restart, 'file[/etc/fission-web/app.json]' if File.exists?('/etc/fission-web/app.json')
+  subscribes :restart, 'file[/etc/fission/web-app.json]' if File.exists?('/etc/fission/web-app.json')
   subscribes :restart, 'remote_file[/opt/fission-web.war]' if File.exists?('/opt/fission-web.war')
 end
