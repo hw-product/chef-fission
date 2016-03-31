@@ -1,3 +1,5 @@
+include_recipe 'runit'
+
 user node[:fission][:user] do
   system true
   home node[:fission][:home]
@@ -21,6 +23,17 @@ file '/etc/fission/backend.json' do
   ).gsub('$NODE_NAME$', node.name)
   mode 0644
   notifies :restart, 'runit_service[fission]' if File.exists?('/etc/init.d/fission')
+end
+
+file '/etc/fission/sql.json' do
+  content Chef::JSONCompat.to_json_pretty(
+    :database => node[:fission][:data][:name],
+    :host => node[:fission][:data].fetch(:host, '127.0.0.1'),
+    :user => node[:fission][:data][:username],
+    :password => node[:fission][:data][:password]
+  )
+  mode 0600
+  owner node[:fission][:user]
 end
 
 remote_file File.join(Chef::Config[:file_cache_path], 'fission-backend.deb') do
