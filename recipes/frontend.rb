@@ -1,5 +1,6 @@
 include_recipe 'runit'
-include_recipe 'fission::java'
+
+package 'openjdk-8-jre-headless'
 
 chef_gem 'xml-simple'
 require 'xmlsimple'
