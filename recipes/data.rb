@@ -1,4 +1,4 @@
-
+node.override[:postgresql][:enable_pgdg_apt] = false
 include_recipe 'postgresql::server'
 
 node.default[:postgresql][:config][:listen_addresses] = '*'
