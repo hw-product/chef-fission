@@ -22,7 +22,10 @@ end
 file '/etc/fission/web-app.json' do
   content Chef::JSONCompat.to_json_pretty(
     Chef::Mixin::DeepMerge.merge(
-      node[:fission][:default_config].fetch(:web, {}),
+      Chef::Mixin::DeepMerge.merge(
+        Hash.new,
+        node[:fission][:default_config].fetch(:web, {})
+      ),
       node[:fission][:web][:config]
     )
   )
