@@ -16,7 +16,7 @@ execute 'add lxd images server' do
 end
 
 execute 'base ubuntu cloud image' do
-  command 'lxd-images import ubuntu --alias base-ubuntu'
+  command 'lxc image import ubuntu --alias base-ubuntu'
   not_if 'lxc image info base-ubuntu'
 end
 
