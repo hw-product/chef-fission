@@ -8,11 +8,13 @@ file '/etc/default/lxd-bridge' do
   content <<-EOS
 USE_LXD_BRIDGE="true"
 LXD_BRIDGE="lxdbr0"
+UPDATE_PROFILE="true"
 LXD_CONFILE=""
 LXD_DOMAIN="lxd"
-LXD_IPV4_ADDR="10.99.0.1"
+LXD_IPV4_ADDR="10.0.8.1"
 LXD_IPV4_NETMASK="255.255.255.0"
-LXD_IPV4_DHCP_RANGE="10.99.0.2,10.99.0.254"
+LXD_IPV4_DHCP_RANGE="10.0.8.2,10.0.8.254"
+LXD_IPV4_NETWORK="10.0.8.1/24"
 LXD_IPV4_DHCP_MAX="253"
 LXD_IPV4_NAT="true"
 LXD_IPV6_ADDR=""
@@ -20,6 +22,10 @@ LXD_IPV6_NETWORK=""
 LXD_IPV6_NAT="false"
 LXD_IPV6_PROXY="false"
 EOS
+end
+
+service 'lxd-bridge' do
+  subscribes :stop, 'file[/etc/default/lxd-bridge]', :immediately
 end
 
 service 'lxd' do
@@ -53,18 +59,13 @@ execute "wait for network on base ubuntu" do
   retries 20
 end
 
-execute 'add brightbox ppa to base ubuntu' do
-  command 'lxc exec base-ubuntu -- apt-add-repository ppa:brightbox/ruby-ng -y'
-  not_if 'lxc image info fission-default'
-end
-
 execute 'update apt in base ubuntu' do
   command 'lxc exec base-ubuntu -- apt-get update -qy'
   not_if 'lxc image info fission-default'
 end
 
 execute 'install packages to base ubuntu' do
-  command 'lxc exec base-ubuntu -- apt-get install ruby2.2 ruby2.2-dev libyajl-dev build-essential zip unzip -qy'
+  command 'lxc exec base-ubuntu -- apt-get install ruby ruby-dev libyajl-dev build-essential zip unzip -qy'
   not_if 'lxc image info fission-default'
 end
 
