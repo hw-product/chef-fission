@@ -1,5 +1,32 @@
 # We assume up front lxd is here
 
+package 'lxd'
+package 'lxd-tools'
+package 'lxd-client'
+
+file '/etc/default/lxd-bridge' do
+  content <<-EOS
+USE_LXD_BRIDGE="true"
+LXD_BRIDGE="lxdbr0"
+LXD_CONFILE=""
+LXD_DOMAIN="lxd"
+LXD_IPV4_ADDR="10.99.0.1"
+LXD_IPV4_NETMASK="255.255.255.0"
+LXD_IPV4_DHCP_RANGE="10.99.0.2,10.99.0.254"
+LXD_IPV4_DHCP_MAX="253"
+LXD_IPV4_NAT="true"
+LXD_IPV6_ADDR=""
+LXD_IPV6_NETWORK=""
+LXD_IPV6_NAT="false"
+LXD_IPV6_PROXY="false"
+EOS
+end
+
+service 'lxd' do
+  supports :restart => true
+  subscribes :restart, 'file[/etc/default/lxd-bridge]', :immediately
+end
+
 execute 'open lxd API' do
   command 'lxc config set core.https_address [::]:8443'
   not_if{ node[:ohai_time] }
@@ -15,13 +42,8 @@ execute 'add lxd images server' do
   not_if 'lxc remote list | grep images.linuxcontainers.org'
 end
 
-execute 'base ubuntu cloud image' do
-  command 'lxc image import ubuntu --alias base-ubuntu'
-  not_if 'lxc image info base-ubuntu'
-end
-
 execute 'start base ubuntu for setup' do
-  command 'lxc launch base-ubuntu base-ubuntu'
+  command 'lxc launch ubuntu:16.04 base-ubuntu'
   not_if 'lxc image info fission-default || lxc info base-ubuntu'
 end
 
