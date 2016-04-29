@@ -17,15 +17,22 @@ end
   end
 end
 
-lxd_node = search(:node, "roles:lxd").first
+node.set[:fission][:service][:config][:fission][:remote_process] = Mash.new(
+  :api_endpoint => "https://localhost:8443",
+  :password => node[:fission][:lxd][:password],
+  :ssl_key => '/etc/fission/ssl/lxd.key',
+  :ssl_cert => '/etc/fission/ssl/lxd.crt'
+)
 
-if(lxd_node)
-  node[:fission][:instances].each do |fission_name, fission_opts|
-    node.default[:fission][:instances][fission_name][:configuration][:fission][:remote_process] = Mash.new(
-      :api_endpoint => "https://#{lxd_node.ipaddress}:8443",
-      :password => node[:stack][:grouping],
-      :ssl_key => '/etc/fission/ssl/lxd.key',
-      :ssl_cert => '/etc/fission/ssl/lxd.crt'
-    )
-  end
-end
+# lxd_node = search(:node, "roles:lxd").first
+
+# if(lxd_node)
+#   node[:fission][:instances].each do |fission_name, fission_opts|
+#     node.default[:fission][:instances][fission_name][:configuration][:fission][:remote_process] = Mash.new(
+#       :api_endpoint => "https://#{lxd_node.ipaddress}:8443",
+#       :password => node[:stack][:grouping],
+#       :ssl_key => '/etc/fission/ssl/lxd.key',
+#       :ssl_cert => '/etc/fission/ssl/lxd.crt'
+#     )
+#   end
+# end

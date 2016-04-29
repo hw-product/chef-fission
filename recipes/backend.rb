@@ -1,4 +1,5 @@
 include_recipe 'runit'
+include_recipe 'fission::lxd'
 
 user node[:fission][:user] do
   system true
