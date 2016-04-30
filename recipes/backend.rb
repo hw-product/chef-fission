@@ -12,11 +12,12 @@ directory node[:fission][:home] do
   owner node[:fission][:user]
 end
 
-directory '/etc/fission' do
+directory '/etc/fission/app' do
+  recursive true
   mode 0755
 end
 
-file '/etc/fission/backend.json' do
+file '/etc/fission/app/backend.json' do
   content Chef::JSONCompat.to_json_pretty(
     Chef::Mixin::DeepMerge.merge(
       node[:fission][:default_config].fetch(:service, {}),
