@@ -57,7 +57,7 @@ runit_service 'fission' do
     :user => node[:fission][:user],
     :group => node[:fission][:user],
     :script_path => '/usr/local/fission/bin/fission',
-    :config_file => '/etc/fission'
+    :config_file => '/etc/fission/app'
   )
   env(
     {'FISSION_APPLICATION_NAME' => 'fission'}.merge(
