@@ -18,10 +18,15 @@ end
 end
 
 node.set[:fission][:service][:config][:fission][:remote_process] = Mash.new(
-  :api_endpoint => "https://localhost:8443",
-  :password => node[:fission][:lxd][:password],
-  :ssl_key => '/etc/fission/ssl/lxd.key',
-  :ssl_cert => '/etc/fission/ssl/lxd.crt'
+  :api => {
+    :provider => :lxd,
+    :credentials => {
+      :api_endpoint => "https://localhost:8443",
+      :password => node[:fission][:lxd][:password],
+      :ssl_key => '/etc/fission/ssl/lxd.key',
+      :ssl_certificate => '/etc/fission/ssl/lxd.crt'
+    }
+  }
 )
 
 # lxd_node = search(:node, "roles:lxd").first

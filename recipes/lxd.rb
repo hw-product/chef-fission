@@ -35,12 +35,10 @@ end
 
 execute 'open lxd API' do
   command 'lxc config set core.https_address [::]:8443'
-  not_if{ node[:ohai_time] }
 end
 
 execute 'set lxd password' do
   command "lxc config set core.trust_password #{node[:fission][:lxd][:password]}"
-  not_if{ node[:ohai_time] }
 end
 
 execute 'add lxd images server' do
