@@ -66,5 +66,5 @@ runit_service 'fission' do
   )
   restart_on_update true
   default_logger true
-  sv_timeout 20
+  sv_timeout 60
 end
