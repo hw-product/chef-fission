@@ -42,10 +42,19 @@ execute 'restore-fission-database-backup' do
     !File.exists?('/opt/fission-data.install') &&
       File.exists?('/tmp/latest.dump')
   end
+  user 'postgres'
 end
 
 file '/opt/fission-data.install' do
   owner 0600
+end
+
+file '/tmp/latest.dump' do
+  action :delete
+end
+
+file '/tmp/latest.tgz' do
+  action :delete
 end
 
 template '/usr/local/bin/fission-database-backup' do
