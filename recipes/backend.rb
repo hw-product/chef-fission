@@ -1,7 +1,3 @@
-include_recipe 'runit'
-include_recipe 'fission::lxd'
-include_recipe 'fission::lxd-client'
-
 user node[:fission][:user] do
   system true
   home node[:fission][:home]
@@ -11,6 +7,10 @@ directory node[:fission][:home] do
   recursive true
   owner node[:fission][:user]
 end
+
+include_recipe 'runit'
+include_recipe 'fission::lxd'
+include_recipe 'fission::lxd-client'
 
 directory '/etc/fission/app' do
   recursive true
@@ -42,14 +42,21 @@ end
 remote_file File.join(Chef::Config[:file_cache_path], 'fission-backend.deb') do
   source node[:fission][:service][:asset_url]
   mode 0644
-  notifies :install, 'dpkg_package[fission]', :immediately
+  notifies :run, 'execute[fission install]', :immediately
+  # notifies :install, 'dpkg_package[fission]', :immediately
 end
 
-dpkg_package 'fission' do
-  source File.join(Chef::Config[:file_cache_path], 'fission-backend.deb')
+execute 'install fission' do
+  command "dpkg -i #{::File.join(Chef::Config[:file_cache_path], 'fission-backend.deb')}"
   action :nothing
   notifies :restart, 'runit_service[fission]' if File.exists?('/etc/init.d/fission')
 end
+
+# dpkg_package 'fission' do
+#   source File.join(Chef::Config[:file_cache_path], 'fission-backend.deb')
+#   action :nothing
+#   notifies :restart, 'runit_service[fission]' if File.exists?('/etc/init.d/fission')
+# end
 
 runit_service 'fission' do
   run_template_name 'fission-ruby'
