@@ -63,6 +63,6 @@ template '/usr/local/bin/fission-database-backup' do
 end
 
 cron 'fission-database-backup' do
-  time :daily
+  time :hourly
   command '/usr/local/bin/fission-database-backup'
 end
