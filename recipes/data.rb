@@ -37,7 +37,7 @@ execute 'unpack-fission-databse-backup' do
 end
 
 execute 'restore-fission-database-backup' do
-  command "pg_restore --dbname #{node[:fission][:data][:name]} --exit-on-error /tmp/latest.dump"
+  command "psql --dbname #{node[:fission][:data][:name]} < /tmp/latest.dump"
   only_if do
     !File.exists?('/opt/fission-data.install') &&
       File.exists?('/tmp/latest.dump')
