@@ -28,7 +28,7 @@ execute 'fetch-fission-database-backup' do
 end
 
 execute 'unpack-fission-databse-backup' do
-  command 'tar -xzf /tmp/latest.tgz'
+  command 'tar --directory /tmp -xzf /tmp/latest.tgz'
   creates '/tmp/latest.dump'
   only_if do
     !File.exists?('/opt/fission-data.install') &&
