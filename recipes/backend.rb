@@ -46,7 +46,7 @@ remote_file File.join(Chef::Config[:file_cache_path], 'fission-backend.deb') do
   # notifies :install, 'dpkg_package[fission]', :immediately
 end
 
-execute 'install fission' do
+execute 'fission install' do
   command "dpkg -i #{::File.join(Chef::Config[:file_cache_path], 'fission-backend.deb')}"
   action :nothing
   notifies :restart, 'runit_service[fission]' if File.exists?('/etc/init.d/fission')
