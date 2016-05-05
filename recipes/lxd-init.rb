@@ -83,7 +83,7 @@ directory File.join(node[:fission][:lxd][:image_directory], 'fission-default') d
 end
 
 execute 'export fission-default' do
-  command 'lxc export local://fission-default'
+  command 'lxc image export local://fission-default'
   cwd File.join(node[:fission][:lxd][:image_directory], 'fission-default')
 end
 
@@ -162,7 +162,7 @@ node[:fission][:lxd][:images].each do |ctn_alias, ctn_name|
   end
 
   execute "export container - #{run_ctn}" do
-    command "lxc export local://#{run_ctn}"
+    command "lxc image export local://#{run_ctn}"
     cwd export_directory
   end
 
