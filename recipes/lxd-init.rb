@@ -157,7 +157,7 @@ node[:fission][:lxd][:images].each do |ctn_alias, ctn_name|
     subscribes :run, "execute[initialize container - #{ctn_name} -> #{run_ctn}]", :immediately
   end
 
-  directory run_ctn do
+  directory export_directory do
     recursive true
   end
 
