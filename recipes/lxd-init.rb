@@ -161,13 +161,13 @@ node[:fission][:lxd][:images].each do |ctn_alias, ctn_name|
     recursive true
   end
 
-  execute "export container - #{run_ctn}" do
-    command "lxc image export local://#{run_ctn}"
+  execute "export container - #{ctn_alias}" do
+    command "lxc image export local://#{ctn_alias}"
     cwd export_directory
   end
 
-  execute "destroy container image - #{run_ctn}" do
-    command "lxc image delete local://#{run_ctn}"
+  execute "destroy container image - #{ctn_alias}" do
+    command "lxc image delete local://#{ctn_alias}"
   end
 
 end
