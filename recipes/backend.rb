@@ -9,7 +9,6 @@ directory node[:fission][:home] do
 end
 
 include_recipe 'runit'
-include_recipe 'fission::lxd'
 include_recipe 'fission::lxd-client'
 
 directory '/etc/fission/app' do
@@ -74,4 +73,5 @@ runit_service 'fission' do
   restart_on_update true
   default_logger true
   sv_timeout 60
+  action node[:fission][:service][:action].to_sym
 end

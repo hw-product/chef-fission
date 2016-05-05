@@ -76,3 +76,4 @@ default[:fission][:users][:directory] = '/home'
 default[:fission][:generator][:gpg_key] = 'packager'
 
 default[:fission][:gems] = Mash.new
+default[:fission][:service][:action] = 'start'
