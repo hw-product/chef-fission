@@ -19,6 +19,14 @@ execute 'lxd configuration' do
   not_if File.exists?('/opt/.lxd-config-touch')
 end
 
+execute 'open lxd API' do
+  command 'lxc config set core.https_address [::]:8443'
+end
+
+execute 'set lxd password' do
+  command "lxc config set core.trust_password #{node[:fission][:lxd][:password]}"
+end
+
 service 'lxd' do
   action :start
 end
