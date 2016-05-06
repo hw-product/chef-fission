@@ -22,5 +22,5 @@ default[:fission][:lxd][:password] = SecureRandom.hex
 default[:fission][:lxd][:image_directory] = '/opt/lxd-images'
 default[:fission][:lxd][:config][:storage_backend] = 'dir'
 default[:fission][:lxd][:config][:storage_create_device] = nil
-default[:fission][:lxd][:config][:storage_create_loop] = 2
-default[:fission][:lxd][:config][:storage_pool] = 'lxd'
+default[:fission][:lxd][:config][:storage_create_loop] = nil
+default[:fission][:lxd][:config][:storage_pool] = nil

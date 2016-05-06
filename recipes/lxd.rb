@@ -15,7 +15,7 @@ service 'lxd-bridge' do
 end
 
 execute 'lxd configuration' do
-  command "lxd --auto #{lxd_config}"
+  command "lxd init --auto #{lxd_config}"
   not_if File.exists?('/opt/.lxd-config-touch')
 end
 
@@ -31,7 +31,7 @@ file '/opt/.lxd-config-touch'
 
 Dir.glob(File.join(node[:fission][:lxd][:image_directory], '*')).each do |image_path|
   next unless File.directory?(image_path)
-  ctn_name = File.basename(image_path)
+  ctn_name = File.basename(image_path).tr('-', '_')
   tarball = File.basename(Dir.glob(File.join(image_path, '*.tar.gz')).first)
 
   execute "import container - #{image_path}" do
