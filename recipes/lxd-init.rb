@@ -171,3 +171,7 @@ node[:fission][:lxd][:images].each do |ctn_alias, ctn_name|
   end
 
 end
+
+execute "clear all remaining images" do
+  command 'lxc image list | grep -Eo "[a-z0-9]{12}" | xargs -n 1 lxc image delete'
+end
