@@ -16,7 +16,7 @@ end
 
 execute 'lxd configuration' do
   command "lxd init --auto #{lxd_config}"
-  not_if File.exists?('/opt/.lxd-config-touch')
+  not_if{ File.exists?('/opt/.lxd-config-touch') }
 end
 
 execute 'open lxd API' do
@@ -49,6 +49,10 @@ Dir.glob(File.join(node[:fission][:lxd][:image_directory], '*')).each do |image_
 
   execute "alias imported container - #{ctn_name}" do
     command "lxc image alias create #{ctn_name} #{tarball.slice(0, 12)}"
+  end
+
+  execute "alias imported container - #{ctn_name.tr('_', '-')}" do
+    command "lxc image alias create #{ctn_name.tr('_', '-')} #{tarball.slice(0, 12)}"
   end
 
   directory image_path do
