@@ -20,6 +20,7 @@ default[:fission][:lxd][:packages][:centos] = ['autoconf', 'bison', 'flex', 'mak
 default[:fission][:lxd][:packages][:default] = ['build-essential', 'curl', 'zip', 'unzip']
 default[:fission][:lxd][:password] = SecureRandom.hex
 default[:fission][:lxd][:image_directory] = '/opt/lxd-images'
+default[:fission][:lxd][:config][:network_address] = '10.0.8.1'
 default[:fission][:lxd][:config][:storage_backend] = 'dir'
 default[:fission][:lxd][:config][:storage_create_device] = nil
 default[:fission][:lxd][:config][:storage_create_loop] = nil
