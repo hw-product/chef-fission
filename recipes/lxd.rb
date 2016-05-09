@@ -23,31 +23,18 @@ execute 'lxd configuration' do
   not_if{ File.exists?('/opt/.lxd-config-touch') }
 end
 
+service 'lxd' do
+  action :start
+end
+
+file '/opt/.lxd-config-touch'
+
 execute 'open lxd API' do
   command 'lxc config set core.https_address [::]:8443'
 end
 
 execute 'set lxd password' do
   command "lxc config set core.trust_password #{node[:fission][:lxd][:password]}"
-end
-
-service 'lxd' do
-  action :start
-end
-
-service 'lxd-bridge' do
-  action :start
-end
-
-file '/opt/.lxd-config-touch'
-
-service 'lxd-bridge' do
-  subscribes :stop, 'file[/etc/default/lxd-bridge]', :immediately
-end
-
-service 'lxd' do
-  supports :restart => true
-  subscribes :restart, 'file[/etc/default/lxd-bridge]', :immediately
 end
 
 execute 'add lxd images server' do
