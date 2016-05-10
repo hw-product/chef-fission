@@ -26,7 +26,7 @@ end
 file '/etc/default/lxd-bridge' do
   content lazy{
     node[:fission][:lxd][:network].map do |key, value|
-      "#{key.upcase}="#{value}"
+      "#{key.upcase}=\"#{value}\""
     end.join("\n") + "\n"
   }
   if(File.exists?('/opt/.lxd-config-touch'))
