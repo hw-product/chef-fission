@@ -18,11 +18,6 @@ service 'lxd-bridge' do
   not_if{ File.exist?('/opt/.lxd-config-touch') }
 end
 
-execute 'lxd configuration' do
-  command "lxd init --auto #{lxd_config}"
-  not_if{ File.exists?('/opt/.lxd-config-touch') }
-end
-
 file '/etc/default/lxd-bridge' do
   content lazy{
     node[:fission][:lxd][:network].map do |key, value|
@@ -32,6 +27,11 @@ file '/etc/default/lxd-bridge' do
   if(File.exists?('/opt/.lxd-config-touch'))
     notifies :restart, 'service[lxd-bridge]', :immediately
   end
+end
+
+execute 'lxd configuration' do
+  command "lxd init --auto #{lxd_config}"
+  not_if{ File.exists?('/opt/.lxd-config-touch') }
 end
 
 service 'lxd' do
