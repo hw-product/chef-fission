@@ -74,5 +74,5 @@ runit_service 'fission' do
   restart_on_update true
   default_logger true
   sv_timeout 60
-  action node[:fission][:service][:action].to_sym
+  action [node[:fission][:service][:action]].flatten.compact.map(&:to_sym)
 end
